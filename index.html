@@ -4,25 +4,58 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Khat - Anonymous College Forum</title>
+<title>Khat</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-/* SAME DESIGN (unchanged) */
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:Arial;background:#0F4C21;color:#E8F5E9;}
-.container{max-width:1200px;margin:auto;padding:20px;}
-header{background:#1B5E20;padding:15px;margin-bottom:20px;}
-h1{text-align:center;color:#A5D6A7;}
-.tagline{text-align:center;color:#81C784;}
-.nav{display:flex;gap:10px;justify-content:center;margin-top:10px;}
-.nav button{background:#2E7D32;color:white;border:none;padding:6px 12px;cursor:pointer;}
-.content{background:#1B5E20;padding:20px;margin-bottom:20px;border-radius:5px;}
-textarea,input,select{width:100%;padding:10px;background:#0F4C21;color:white;border:1px solid #2E7D32;}
-button{background:#2E7D32;color:white;padding:10px;border:none;margin-top:10px;cursor:pointer;}
-.post{background:#0F4C21;padding:15px;margin-bottom:15px;border-radius:5px;}
-.reply{margin-left:20px;background:#1B5E20;padding:10px;margin-top:5px;}
+body {
+    font-family: Arial, sans-serif;
+    background: #0F4C21;
+    color: #E8F5E9;
+    margin: 0;
+}
+
+header {
+    text-align: center;
+    background: #1B5E20;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+}
+
+textarea, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #0F4C21;
+    border: 1px solid #2E7D32;
+    color: white;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px;
+    background: #2E7D32;
+    border: none;
+    color: white;
+    cursor: pointer;
+}
+
+.post {
+    background: #1B5E20;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 5px;
+}
+
+small {
+    color: #81C784;
+}
 </style>
 </head>
 
@@ -30,218 +63,116 @@ button{background:#2E7D32;color:white;padding:10px;border:none;margin-top:10px;c
 
 <header>
     <h1>💬 Khat</h1>
-    <p class="tagline">Anonymous community • auto delete after 24h</p>
-    <div class="nav" id="communityNav"></div>
+    <p>Anonymous • auto delete 24h</p>
 </header>
 
 <div class="container">
 
-<div class="content">
-    <h2>Create Post</h2>
+    <!-- CREATE POST -->
+    <select id="community">
+        <option value="">Select community</option>
+        <option value="k/general">k/general</option>
+        <option value="k/chess">k/chess</option>
+        <option value="k/tech">k/tech</option>
+    </select>
 
-    <select id="community"></select>
-    <textarea id="content" maxlength="280"></textarea>
+    <textarea id="content" maxlength="280" placeholder="Write something..."></textarea>
 
-    <button onclick="createPost()">Post</button>
-</div>
+    <button id="postBtn">Post</button>
 
-<div class="content">
-    <h2>Posts</h2>
+    <!-- POSTS -->
     <div id="posts"></div>
-</div>
 
 </div>
 
+<!-- ✅ IMPORTANT: SCRIPT AT BOTTOM -->
 <script>
-// ✅ YOUR SUPABASE CONNECTED
+
+// 🔑 SUPABASE (ALREADY FILLED)
 const supabase = window.supabase.createClient(
     "https://sveexlibgersvtsyggmj.supabase.co",
     "sb_publishable_J-EXRUHIOncT4Q15Ha5ohQ_JPvOMDBR"
 );
 
-// communities
-const COMMUNITIES = [
-    'k/general','k/chess','k/tech','k/sports','k/music','k/study'
-];
-
-let currentCommunity = "all";
-
-// anonymous user
+// 👤 ANON USER
 let userId = localStorage.getItem("anon_id");
-if(!userId){
-    userId="anon_"+Math.random().toString(36).substr(2,9);
-    localStorage.setItem("anon_id",userId);
+if (!userId) {
+    userId = "anon_" + Math.random().toString(36).substring(2, 9);
+    localStorage.setItem("anon_id", userId);
 }
 
-// setup UI
-function init(){
-    const nav=document.getElementById("communityNav");
-    const select=document.getElementById("community");
-
-    nav.innerHTML=`<button onclick="filterCommunity('all')">All</button>`;
-    select.innerHTML=`<option value="">Select</option>`;
-
-    COMMUNITIES.forEach(c=>{
-        nav.innerHTML+=`<button onclick="filterCommunity('${c}')">${c}</button>`;
-        select.innerHTML+=`<option value="${c}">${c}</option>`;
-    });
-
-    loadPosts();
-}
-
-// filter
-function filterCommunity(c){
-    currentCommunity=c;
-    loadPosts();
-}
-
+// 🚀 CREATE POST FUNCTION
 async function createPost() {
-
     console.log("Button clicked");
 
     const content = document.getElementById("content").value.trim();
     const community = document.getElementById("community").value;
-
-    console.log(content, community);
 
     if (!content || !community) {
         alert("Fill all fields");
         return;
     }
 
-    const { data, error } = await supabase
-        .from("posts")
-        .insert([{
-            content: content,
-            community: community,
-            anonymous_id: userId,
-            anonymous_name: "Anon",
-            created_at: new Date().toISOString()
-        }]);
-
-    console.log("Response:", data, error);
+    const { error } = await supabase.from("posts").insert([{
+        content: content,
+        community: community,
+        anonymous_id: userId,
+        anonymous_name: "Anon",
+        created_at: new Date().toISOString()
+    }]);
 
     if (error) {
-        alert("ERROR: " + error.message);
+        console.error(error);
+        alert(error.message);
         return;
     }
-
-    alert("Posted successfully");
 
     document.getElementById("content").value = "";
     loadPosts();
 }
-// load posts
-async function loadPosts(){
-    let query=supabase
+
+// 🔗 BUTTON CONNECT (NO onclick BUG)
+document.getElementById("postBtn").addEventListener("click", createPost);
+
+// 📥 LOAD POSTS
+async function loadPosts() {
+    const { data, error } = await supabase
         .from("posts")
         .select("*")
-        .order("created_at",{ascending:false})
-        .limit(50);
+        .order("created_at", { ascending: false })
+        .limit(20);
 
-    if(currentCommunity!=="all"){
-        query=query.eq("community",currentCommunity);
-    }
-
-    const {data,error}=await query;
-
-    if(error){
+    if (error) {
         console.error(error);
         return;
     }
 
-    const div=document.getElementById("posts");
+    const div = document.getElementById("posts");
 
-    if(!data.length){
-        div.innerHTML="<p>No posts</p>";
+    if (!data || data.length === 0) {
+        div.innerHTML = "<p>No posts yet</p>";
         return;
     }
 
-    div.innerHTML=data.map(p=>`
+    div.innerHTML = data.map(post => `
         <div class="post">
-            <small>${p.community} • ${timeAgo(p.created_at)}</small>
-            <p>${escapeHtml(p.content)}</p>
-
-            <button onclick="toggleReply(${p.id})">Reply</button>
-
-            <div id="reply-${p.id}" style="display:none">
-                <textarea id="reply-text-${p.id}"></textarea>
-                <button onclick="sendReply(${p.id})">Send</button>
-            </div>
-
-            <div id="replies-${p.id}"></div>
-        </div>
-    `).join("");
-
-    data.forEach(p=>loadReplies(p.id));
-}
-
-// replies
-async function sendReply(postId){
-    const text=document.getElementById(`reply-text-${postId}`).value;
-
-    if(!text){
-        alert("empty");
-        return;
-    }
-
-    await supabase.from("replies").insert([{
-        post_id:postId,
-        content:text,
-        anonymous_id:userId,
-        anonymous_name:"Anon",
-        created_at:new Date().toISOString()
-    }]);
-
-    loadReplies(postId);
-}
-
-// load replies
-async function loadReplies(postId){
-    const {data}=await supabase
-        .from("replies")
-        .select("*")
-        .eq("post_id",postId);
-
-    const div=document.getElementById(`replies-${postId}`);
-
-    if(!data||!data.length){
-        div.innerHTML="";
-        return;
-    }
-
-    div.innerHTML=data.map(r=>`
-        <div class="reply">
-            <small>${timeAgo(r.created_at)}</small>
-            <p>${escapeHtml(r.content)}</p>
+            <small>${post.community}</small>
+            <p>${escapeHtml(post.content)}</p>
         </div>
     `).join("");
 }
 
-// toggle
-function toggleReply(id){
-    const el=document.getElementById(`reply-${id}`);
-    el.style.display=el.style.display==="none"?"block":"none";
+// 🛡️ SAFE HTML
+function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
 }
 
-// utils
-function timeAgo(t){
-    const diff=(new Date()-new Date(t))/1000;
-    if(diff<60)return"just now";
-    if(diff<3600)return Math.floor(diff/60)+"m";
-    if(diff<86400)return Math.floor(diff/3600)+"h";
-    return Math.floor(diff/86400)+"d";
-}
+// 🔄 AUTO LOAD
+loadPosts();
+setInterval(loadPosts, 30000);
 
-function escapeHtml(t){
-    const d=document.createElement("div");
-    d.textContent=t;
-    return d.innerHTML;
-}
-
-// start
-init();
-setInterval(loadPosts,30000);
 </script>
 
 </body>
