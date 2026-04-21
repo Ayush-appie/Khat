@@ -9,52 +9,33 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background: #0F4C21;
-    color: #E8F5E9;
-    margin: 0;
-}
+body { font-family: Arial; background:#0F4C21; color:#E8F5E9; margin:0; }
+header { text-align:center; background:#1B5E20; padding:20px; }
+.container { max-width:900px; margin:auto; padding:20px; }
 
-header {
-    text-align: center;
-    background: #1B5E20;
-    padding: 20px;
-}
-
-.container {
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-}
-
-textarea, select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    background: #0F4C21;
-    border: 1px solid #2E7D32;
-    color: white;
+input, textarea, select {
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    background:#0F4C21;
+    border:1px solid #2E7D32;
+    color:white;
 }
 
 button {
-    margin-top: 10px;
-    padding: 10px;
-    background: #2E7D32;
-    border: none;
-    color: white;
-    cursor: pointer;
+    margin-top:10px;
+    padding:10px;
+    background:#2E7D32;
+    border:none;
+    color:white;
+    cursor:pointer;
 }
 
 .post {
-    background: #1B5E20;
-    padding: 15px;
-    margin-top: 15px;
-    border-radius: 5px;
-}
-
-small {
-    color: #81C784;
+    background:#1B5E20;
+    padding:15px;
+    margin-top:15px;
+    border-radius:5px;
 }
 </style>
 </head>
@@ -62,112 +43,149 @@ small {
 <body>
 
 <header>
-    <h1>💬 Khat</h1>
-    <p>Anonymous • auto delete 24h</p>
+<h1>💬 Khat</h1>
+<p>Login required • secure posting</p>
 </header>
 
 <div class="container">
 
+<!-- 🔐 LOGIN UI -->
+<div id="auth">
+    <h3>Login / Signup</h3>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="signUp()">Sign Up</button>
+    <button onclick="login()">Login</button>
+</div>
+
+<!-- 🧠 MAIN APP -->
+<div id="app" style="display:none;">
+
     <select id="community">
-        <option value="">Select community</option>
+        <option value="">Select</option>
         <option value="k/general">k/general</option>
         <option value="k/chess">k/chess</option>
         <option value="k/tech">k/tech</option>
     </select>
 
-    <textarea id="content" maxlength="280" placeholder="Write something..."></textarea>
+    <textarea id="content"></textarea>
+    <button onclick="createPost()">Post</button>
 
-    <button id="postBtn">Post</button>
+    <button onclick="logout()">Logout</button>
 
     <div id="posts"></div>
 
 </div>
 
+</div>
+
 <script>
 
-// ✅ SAFE INIT (prevents duplicate error)
-if (!window._supabaseInitialized) {
+const supabase = window.supabase.createClient(
+    "https://sveexlibgersvtsyggmj.supabase.co",
+    "sb_publishable_J-EXRUHIOncT4Q15Ha5ohQ_JPvOMDBR"
+);
 
-    window._supabaseInitialized = true;
+// SIGNUP
+async function signUp() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-    const supabase = window.supabase.createClient(
-        "https://sveexlibgersvtsyggmj.supabase.co",
-        "sb_publishable_J-EXRUHIOncT4Q15Ha5ohQ_JPvOMDBR"
-    );
+    const { error } = await supabase.auth.signUp({ email, password });
 
-    let userId = localStorage.getItem("anon_id");
-    if (!userId) {
-        userId = "anon_" + Math.random().toString(36).substring(2, 9);
-        localStorage.setItem("anon_id", userId);
-    }
-
-    async function createPost() {
-        console.log("clicked");
-
-        const content = document.getElementById("content").value.trim();
-        const community = document.getElementById("community").value;
-
-        if (!content || !community) {
-            alert("Fill all fields");
-            return;
-        }
-
-        const { error } = await supabase.from("posts").insert([{
-            content,
-            community,
-            anonymous_id: userId,
-            anonymous_name: "Anon",
-            created_at: new Date().toISOString()
-        }]);
-
-        if (error) {
-            console.error(error);
-            alert(error.message);
-            return;
-        }
-
-        document.getElementById("content").value = "";
-        loadPosts();
-    }
-
-    document.getElementById("postBtn").addEventListener("click", createPost);
-
-    async function loadPosts() {
-        const { data, error } = await supabase
-            .from("posts")
-            .select("*")
-            .order("created_at", { ascending: false })
-            .limit(20);
-
-        if (error) {
-            console.error(error);
-            return;
-        }
-
-        const div = document.getElementById("posts");
-
-        if (!data || data.length === 0) {
-            div.innerHTML = "<p>No posts yet</p>";
-            return;
-        }
-
-        div.innerHTML = data.map(post => `
-            <div class="post">
-                <small>${post.community}</small>
-                <p>${escapeHtml(post.content)}</p>
-            </div>
-        `).join("");
-    }
-
-    function escapeHtml(text) {
-        const div = document.createElement("div");
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    loadPosts();
-    setInterval(loadPosts, 30000);
+    if (error) alert(error.message);
+    else alert("Check your email to confirm");
 }
+
+// LOGIN
+async function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) alert(error.message);
+    else showApp();
+}
+
+// LOGOUT
+async function logout() {
+    await supabase.auth.signOut();
+    document.getElementById("app").style.display = "none";
+    document.getElementById("auth").style.display = "block";
+}
+
+// SHOW APP
+function showApp() {
+    document.getElementById("auth").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    loadPosts();
+}
+
+// CHECK USER ON LOAD
+async function checkUser() {
+    const { data } = await supabase.auth.getUser();
+    if (data.user) showApp();
+}
+
+// CREATE POST
+async function createPost() {
+
+    const { data } = await supabase.auth.getUser();
+
+    if (!data.user) {
+        alert("Login required");
+        return;
+    }
+
+    const content = document.getElementById("content").value;
+    const community = document.getElementById("community").value;
+
+    if (!content || !community) {
+        alert("Fill all fields");
+        return;
+    }
+
+    const { error } = await supabase.from("posts").insert([{
+        content,
+        community,
+        user_id: data.user.id,
+        created_at: new Date().toISOString()
+    }]);
+
+    if (error) {
+        alert(error.message);
+        return;
+    }
+
+    document.getElementById("content").value = "";
+    loadPosts();
+}
+
+// LOAD POSTS
+async function loadPosts() {
+    const { data } = await supabase
+        .from("posts")
+        .select("*")
+        .order("created_at", { ascending:false });
+
+    const div = document.getElementById("posts");
+
+    if (!data || data.length === 0) {
+        div.innerHTML = "No posts";
+        return;
+    }
+
+    div.innerHTML = data.map(p => `
+        <div class="post">
+            <small>${p.community}</small>
+            <p>${p.content}</p>
+        </div>
+    `).join("");
+}
+
+checkUser();
 
 </script>
 
