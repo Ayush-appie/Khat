@@ -95,33 +95,42 @@ function filterCommunity(c){
     loadPosts();
 }
 
-// create post
-async function createPost(){
-    const content=document.getElementById("content").value.trim();
-    const community=document.getElementById("community").value;
+async function createPost() {
 
-    if(!content||!community){
+    console.log("Button clicked");
+
+    const content = document.getElementById("content").value.trim();
+    const community = document.getElementById("community").value;
+
+    console.log(content, community);
+
+    if (!content || !community) {
         alert("Fill all fields");
         return;
     }
 
-    const {error}=await supabase.from("posts").insert([{
-        content,
-        community,
-        anonymous_id:userId,
-        anonymous_name:"Anon",
-        created_at:new Date().toISOString()
-    }]);
+    const { data, error } = await supabase
+        .from("posts")
+        .insert([{
+            content: content,
+            community: community,
+            anonymous_id: userId,
+            anonymous_name: "Anon",
+            created_at: new Date().toISOString()
+        }]);
 
-    if(error){
-        alert(error.message);
+    console.log("Response:", data, error);
+
+    if (error) {
+        alert("ERROR: " + error.message);
         return;
     }
 
-    document.getElementById("content").value="";
+    alert("Posted successfully");
+
+    document.getElementById("content").value = "";
     loadPosts();
 }
-
 // load posts
 async function loadPosts(){
     let query=supabase
