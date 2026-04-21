@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KalingaChat - Anonymous College Forum</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0F4C21;
+            color: #E8F5E9;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: #1B5E20;
+            padding: 15px 0;
+            border-bottom: 2px solid #2E7D32;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #A5D6A7;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .tagline {
+            text-align: center;
+            color: #81C784;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .nav {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav button {
+            background: #2E7D32;
+            color: #E8F5E9;
+            border: 1px solid #388E3C;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        .nav button:hover {
+            background: #388E3C;
+        }
+
+        .nav button.active {
+            background: #4CAF50;
+            border-color: #66BB6A;
+        }
+
+        .content {
+            background: #1B5E20;
+            border: 1px solid #2E7D32;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .post-form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #A5D6A7;
+            font-weight: bold;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            background: #0F4C21;
+            border: 1px solid #2E7D32;
+            color: #E8F5E9;
+            font-size: 14px;
+            border-radius: 3px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: Arial, sans-serif;
+        }
+
+        button {
+            background: #2E7D32;
+            color: #E8F5E9;
+            border: 1px solid #388E3C;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #388E3C;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .post {
+            background: #0F4C21;
+            border: 1px solid #2E7D32;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #2E7D32;
+        }
+
+        .anonymous-name {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .post-time {
+            color: #81C784;
+            font-size: 12px;
+        }
+
+        .post-content {
+            color: #E8F5E9;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+        }
+
+        .post-footer {
+            display: flex;
+            gap: 10px;
+            font-size: 12px;
+        }
+
+        .post-footer button {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .community-tag {
+            background: #2E7D32;
+            color: #A5D6A7;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .error {
+            background: #D32F2F;
+            color: white;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 3px;
+        }
+
+        .success {
+            background: #388E3C;
+            color: white;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 3px;
+        }
+
+        .char-counter {
+            text-align: right;
+            font-size: 12px;
+            color: #81C784;
+            margin-top: 5px;
+        }
+
+        .char-counter.warning {
+            color: #FFB74D;
+        }
+
+        .char-counter.error {
+            color: #E57373;
+        }
+
+        .reply-form {
+            margin-top: 10px;
+            padding: 10px;
+            background: #1B5E20;
+            border: 1px solid #2E7D32;
+            border-radius: 3px;
+        }
+
+        .replies {
+            margin-left: 30px;
+            margin-top: 10px;
+        }
+
+        .reply {
+            background: #1B5E20;
+            border-left: 3px solid #4CAF50;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #81C784;
+        }
+
+        .setup-section {
+            background: #2E7D32;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .setup-section h3 {
+            color: #A5D6A7;
+            margin-bottom: 15px;
+        }
+
+        .setup-section code {
+            background: #0F4C21;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>KalingaChat</h1>
+            <p class="tagline">Anonymous community for KIIT students • All posts auto-delete after 24 hours</p>
+            <div class="nav" id="communityNav"></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div id="setupInstructions" class="setup-section">
+            <h3>🔧 Setup Required</h3>
+            <p style="margin-bottom: 15px;">To use this application, you need to configure your Supabase credentials:</p>
+            <div class="form-group">
+                <label>Supabase URL</label>
+                <input type="text" id="supabaseUrl" placeholder="https://your-project.supabase.co">
+            </div>
+            <div class="form-group">
+                <label>Supabase Anon Key</label>
+                <input type="text" id="supabaseKey" placeholder="Your anon/public key">
+            </div>
+            <button onclick="initializeSupabase()">Connect to Supabase</button>
+            <p style="margin-top: 15px; font-size: 13px; color: #A5D6A7;">Don't have a Supabase project? Check the setup guide below!</p>
+        </div>
+
+        <div id="appContent" style="display: none;">
+            <div class="content">
+                <h2 style="color: #A5D6A7; margin-bottom: 15px;">Create Post</h2>
+                <div id="message"></div>
+                <form id="postForm" class="post-form">
+                    <div class="form-group">
+                        <label>Community</label>
+                        <select id="community" required>
+                            <option value="">Select a community</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Your Post (max 280 characters)</label>
+                        <textarea id="content" maxlength="280" required></textarea>
+                        <div class="char-counter" id="charCounter">0 / 280</div>
+                    </div>
+                    <button type="submit">Post Anonymously</button>
+                </form>
+            </div>
+
+            <div class="content">
+                <h2 style="color: #A5D6A7; margin-bottom: 15px;">Recent Posts</h2>
+                <div id="posts"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let supabase = null;
+        let currentCommunity = 'all';
+        let currentUser = null;
+
+        const COMMUNITIES = [
+            'k/general', 'k/chess', 'k/tech', 'k/sports', 'k/music', 'k/study'
+        ];
+
+        const PROFANITY_WORDS = {
+            english: ['fuck', 'shit', 'bitch', 'asshole', 'damn', 'hell', 'bastard', 'crap'],
+            hindi: ['chutiya', 'madarchod', 'bhenchod', 'gandu', 'lodu', 'chut', 'lund'],
+            bengali: ['magir', 'bhoda', 'magi', 'gandu'],
+            odia: ['gando', 'magaja']
+        };
+
+        function initializeSupabase() {
+            const url = document.getElementById('supabaseUrl').value.trim();
+            const key = document.getElementById('supabaseKey').value.trim();
+
+            if (!url || !key) {
+                showMessage('Please enter both Supabase URL and Key', 'error');
+                return;
+            }
+
+            try {
+                supabase = window.supabase.createClient(url, key);
+                localStorage.setItem('supabase_url', url);
+                localStorage.setItem('supabase_key', key);
+                
+                document.getElementById('setupInstructions').style.display = 'none';
+                document.getElementById('appContent').style.display = 'block';
+                
+                initApp();
+            } catch (error) {
+                showMessage('Failed to connect to Supabase: ' + error.message, 'error');
+            }
+        }
+
+        function checkStoredCredentials() {
+            const url = localStorage.getItem('supabase_url');
+            const key = localStorage.getItem('supabase_key');
+
+            if (url && key) {
+                document.getElementById('supabaseUrl').value = url;
+                document.getElementById('supabaseKey').value = key;
+                initializeSupabase();
+            }
+        }
+
+        function initApp() {
+            generateAnonymousIdentity();
+            setupCommunityNav();
+            loadPosts();
+            setupEventListeners();
+            startAutoRefresh();
+        }
+
+        function generateAnonymousIdentity() {
+            let userId = localStorage.getItem('anonymous_user_id');
+            if (!userId) {
+                userId = 'anon_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('anonymous_user_id', userId);
+            }
+
+            const names = [
+                'Green Panda', 'Silent Tiger', 'Quick Fox', 'Brave Eagle', 
+                'Wise Owl', 'Swift Deer', 'Bold Lion', 'Clever Raven',
+                'Strong Bear', 'Gentle Dolphin', 'Sharp Hawk', 'Calm Wolf'
+            ];
+            
+            const nameIndex = parseInt(userId.split('_')[1], 36) % names.length;
+            currentUser = {
+                id: userId,
+                displayName: names[nameIndex]
+            };
+        }
+
+        function setupCommunityNav() {
+            const nav = document.getElementById('communityNav');
+            const select = document.getElementById('community');
+            
+            nav.innerHTML = '<button class="active" onclick="filterCommunity(\'all\')">All</button>';
+            select.innerHTML = '<option value="">Select a community</option>';
+            
+            COMMUNITIES.forEach(comm => {
+                nav.innerHTML += `<button onclick="filterCommunity('${comm}')">${comm}</button>`;
+                select.innerHTML += `<option value="${comm}">${comm}</option>`;
+            });
+        }
+
+        function filterCommunity(community) {
+            currentCommunity = community;
+            document.querySelectorAll('.nav button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            loadPosts();
+        }
+
+        function setupEventListeners() {
+            document.getElementById('postForm').addEventListener('submit', handlePostSubmit);
+            document.getElementById('content').addEventListener('input', updateCharCounter);
+        }
+
+        function updateCharCounter() {
+            const content = document.getElementById('content').value;
+            const counter = document.getElementById('charCounter');
+            const length = content.length;
+            
+            counter.textContent = `${length} / 280`;
+            
+            if (length > 260) {
+                counter.classList.add('error');
+                counter.classList.remove('warning');
+            } else if (length > 200) {
+                counter.classList.add('warning');
+                counter.classList.remove('error');
+            } else {
+                counter.classList.remove('warning', 'error');
+            }
+        }
+
+        function containsProfanity(text) {
+            const lowerText = text.toLowerCase();
+            
+            for (const lang in PROFANITY_WORDS) {
+                for (const word of PROFANITY_WORDS[lang]) {
+                    const pattern = new RegExp(`\\b${word}\\b|${word.split('').join('[^a-z]*')}`, 'i');
+                    if (pattern.test(lowerText)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        async function handlePostSubmit(e) {
+            e.preventDefault();
+            
+            const content = document.getElementById('content').value.trim();
+            const community = document.getElementById('community').value;
+            
+            if (!content || !community) {
+                showMessage('Please fill all fields', 'error');
+                return;
+            }
+
+            if (containsProfanity(content)) {
+                showMessage('Your post contains inappropriate language. Please keep it clean!', 'error');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from('posts')
+                    .insert([{
+                        content: content,
+                        community: community,
+                        anonymous_id: currentUser.id,
+                        anonymous_name: currentUser.displayName,
+                        created_at: new Date().toISOString()
+                    }]);
+
+                if (error) throw error;
+
+                showMessage('Post created successfully!', 'success');
+                document.getElementById('postForm').reset();
+                updateCharCounter();
+                loadPosts();
+            } catch (error) {
+                showMessage('Error creating post: ' + error.message, 'error');
+            }
+        }
+
+        async function loadPosts() {
+            try {
+                const postsDiv = document.getElementById('posts');
+                postsDiv.innerHTML = '<div class="loading">Loading posts...</div>';
+
+                let query = supabase
+                    .from('posts')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(50);
+
+                if (currentCommunity !== 'all') {
+                    query = query.eq('community', currentCommunity);
+                }
+
+                const { data: posts, error } = await query;
+
+                if (error) throw error;
+
+                if (!posts || posts.length === 0) {
+                    postsDiv.innerHTML = '<p style="text-align: center; color: #81C784;">No posts yet. Be the first to post!</p>';
+                    return;
+                }
+
+                postsDiv.innerHTML = posts.map(post => `
+                    <div class="post">
+                        <div class="post-header">
+                            <div>
+                                <span class="anonymous-name">${escapeHtml(post.anonymous_name)}</span>
+                                <span class="community-tag">${escapeHtml(post.community)}</span>
+                            </div>
+                            <span class="post-time">${formatTime(post.created_at)}</span>
+                        </div>
+                        <div class="post-content">${escapeHtml(post.content)}</div>
+                        <div class="post-footer">
+                            <button onclick="toggleReply(${post.id})">Reply</button>
+                        </div>
+                        <div id="reply-${post.id}" class="reply-form" style="display: none;">
+                            <textarea id="reply-content-${post.id}" maxlength="280" placeholder="Write your reply..."></textarea>
+                            <button onclick="submitReply(${post.id})">Post Reply</button>
+                        </div>
+                        <div id="replies-${post.id}" class="replies"></div>
+                    </div>
+                `).join('');
+
+                posts.forEach(post => loadReplies(post.id));
+            } catch (error) {
+                console.error('Error loading posts:', error);
+                document.getElementById('posts').innerHTML = '<p class="error">Error loading posts. Please refresh.</p>';
+            }
+        }
+
+        async function loadReplies(postId) {
+            try {
+                const { data: replies, error } = await supabase
+                    .from('replies')
+                    .select('*')
+                    .eq('post_id', postId)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                const repliesDiv = document.getElementById(`replies-${postId}`);
+                if (!replies || replies.length === 0) {
+                    repliesDiv.innerHTML = '';
+                    return;
+                }
+
+                repliesDiv.innerHTML = replies.map(reply => `
+                    <div class="reply">
+                        <div class="post-header">
+                            <span class="anonymous-name">${escapeHtml(reply.anonymous_name)}</span>
+                            <span class="post-time">${formatTime(reply.created_at)}</span>
+                        </div>
+                        <div class="post-content">${escapeHtml(reply.content)}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading replies:', error);
+            }
+        }
+
+        function toggleReply(postId) {
+            const replyForm = document.getElementById(`reply-${postId}`);
+            replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
+        }
+
+        async function submitReply(postId) {
+            const content = document.getElementById(`reply-content-${postId}`).value.trim();
+            
+            if (!content) {
+                showMessage('Please write a reply', 'error');
+                return;
+            }
+
+            if (containsProfanity(content)) {
+                showMessage('Your reply contains inappropriate language. Please keep it clean!', 'error');
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('replies')
+                    .insert([{
+                        post_id: postId,
+                        content: content,
+                        anonymous_id: currentUser.id,
+                        anonymous_name: currentUser.displayName,
+                        created_at: new Date().toISOString()
+                    }]);
+
+                if (error) throw error;
+
+                document.getElementById(`reply-content-${postId}`).value = '';
+                loadReplies(postId);
+                showMessage('Reply posted!', 'success');
+            } catch (error) {
+                showMessage('Error posting reply: ' + error.message, 'error');
+            }
+        }
+
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000);
+            
+            if (diff < 60) return 'just now';
+            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+            return `${Math.floor(diff / 86400)}d ago`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.className = type;
+            messageDiv.textContent = text;
+            messageDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function startAutoRefresh() {
+            setInterval(() => {
+                if (document.getElementById('appContent').style.display !== 'none') {
+                    loadPosts();
+                }
+            }, 30000);
+        }
+
+        checkStoredCredentials();
+    </script>
+</body>
+</html>
