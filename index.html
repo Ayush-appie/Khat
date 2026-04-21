@@ -123,6 +123,7 @@
       <input id="email" type="email" placeholder="you@kiit.ac.in">
       <input id="password" type="password" placeholder="Password">
       <input id="username" maxlength="24" placeholder="Choose username (signup only)">
+      <p id="authStatus" class="notice"></p>
       <div class="row">
         <button onclick="signUp()">Sign Up</button>
         <button class="secondary" onclick="login()">Log In</button>
@@ -199,6 +200,13 @@
       let hiddenReplies = new Set();
       let profanityWords = [...FALLBACK_BAD_WORDS];
       let isModerator = false;
+      const authStatusEl = document.getElementById("authStatus");
+
+      function setAuthStatus(message, isError) {
+        if (!authStatusEl) return;
+        authStatusEl.textContent = message || "";
+        authStatusEl.style.color = isError ? "#ff9aa2" : "var(--muted)";
+      }
 
       function showAuth() {
         document.getElementById("authView").classList.remove("hidden");
@@ -215,39 +223,67 @@
       }
 
       async function signUp() {
-        const email = document.getElementById("email").value.trim().toLowerCase();
-        const password = document.getElementById("password").value;
-        const username = document.getElementById("username").value.trim().toLowerCase();
-        if (!kiitEmail(email)) return alert("Use a valid @kiit.ac.in email.");
-        if (username.length < 3) return alert("Username must be at least 3 characters.");
+        try {
+          setAuthStatus("Creating account...");
+          const email = document.getElementById("email").value.trim().toLowerCase();
+          const password = document.getElementById("password").value;
+          const username = document.getElementById("username").value.trim().toLowerCase();
+          if (!kiitEmail(email)) return setAuthStatus("Use a valid @kiit.ac.in email.", true);
+          if (password.length < 6) return setAuthStatus("Password must be at least 6 characters.", true);
+          if (username.length < 3) return setAuthStatus("Username must be at least 3 characters.", true);
 
-        const { data: uTaken } = await supabaseClient.from("profiles").select("id").eq("username", username).maybeSingle();
-        if (uTaken) return alert("Username already taken.");
+          const { data: uTaken } = await supabaseClient.from("profiles").select("id").eq("username", username).maybeSingle();
+          if (uTaken) return setAuthStatus("Username already taken.", true);
 
-        const { data, error } = await supabaseClient.auth.signUp({
-          email, password, options: { data: { username } }
-        });
-        if (error) return alert(error.message);
-        if (!data.user) return alert("Check your email for verification, then login.");
+          const { data, error } = await supabaseClient.auth.signUp({
+            email, password, options: { data: { username } }
+          });
+          if (error) return setAuthStatus(error.message, true);
+          if (!data.user) return setAuthStatus("Check your email for verification, then login.", false);
 
-        await ensureProfile(data.user, username);
-        await bootstrap();
+          await ensureProfile(data.user, username);
+          setAuthStatus("");
+          await bootstrap();
+        } catch (err) {
+          console.error(err);
+          setAuthStatus("Signup failed. Check configuration and try again.", true);
+        }
       }
 
       async function login() {
-        const email = document.getElementById("email").value.trim().toLowerCase();
-        const password = document.getElementById("password").value;
-        if (!kiitEmail(email)) return alert("Only @kiit.ac.in users can login.");
-        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-        if (error) return alert(error.message);
-        await bootstrap();
+        try {
+          setAuthStatus("Logging in...");
+          const email = document.getElementById("email").value.trim().toLowerCase();
+          const password = document.getElementById("password").value;
+          if (!kiitEmail(email)) return setAuthStatus("Only @kiit.ac.in users can login.", true);
+          const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+          if (error) return setAuthStatus(error.message, true);
+          setAuthStatus("");
+          await bootstrap();
+        } catch (err) {
+          console.error(err);
+          setAuthStatus("Login failed. Please retry.", true);
+        }
       }
 
       async function loginWithGoogle() {
-        await supabaseClient.auth.signInWithOAuth({
-          provider: "google",
-          options: { redirectTo: window.location.href }
-        });
+        try {
+          setAuthStatus("Redirecting to Google...");
+          const { error } = await supabaseClient.auth.signInWithOAuth({
+            provider: "google",
+            options: {
+              redirectTo: window.location.href,
+              queryParams: {
+                hd: "kiit.ac.in",
+                prompt: "select_account"
+              }
+            }
+          });
+          if (error) setAuthStatus(error.message, true);
+        } catch (err) {
+          console.error(err);
+          setAuthStatus("Google login setup is incomplete. Check provider configuration.", true);
+        }
       }
 
       async function logout() {
@@ -534,6 +570,14 @@
       window.deleteReply = deleteReply;
       window.warnUser = warnUser;
       window.renderCommunities = renderCommunities;
+
+      window.addEventListener("error", (event) => {
+        setAuthStatus("Runtime error: " + (event.message || "unknown"), true);
+      });
+      window.addEventListener("unhandledrejection", (event) => {
+        const msg = event && event.reason && event.reason.message ? event.reason.message : "Unhandled promise rejection";
+        setAuthStatus(msg, true);
+      });
 
       supabaseClient.auth.onAuthStateChange(async () => { await bootstrap(); });
       bootstrap();
