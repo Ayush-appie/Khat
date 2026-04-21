@@ -43,13 +43,13 @@ button {
 <body>
 
 <header>
-<h1>💬Khat</h1>
+<h1>💬 Khat</h1>
 <p>Login required • secure posting</p>
 </header>
 
 <div class="container">
 
-<!-- 🔐 LOGIN UI -->
+<!-- LOGIN -->
 <div id="auth">
     <h3>Login / Signup</h3>
     <input type="email" id="email" placeholder="Email">
@@ -59,9 +59,8 @@ button {
     <button onclick="login()">Login</button>
 </div>
 
-<!-- 🧠 MAIN APP -->
+<!-- APP -->
 <div id="app" style="display:none;">
-
     <select id="community">
         <option value="">Select</option>
         <option value="k/general">k/general</option>
@@ -75,13 +74,14 @@ button {
     <button onclick="logout()">Logout</button>
 
     <div id="posts"></div>
-
 </div>
 
 </div>
+
 <script>
 
-const supabase = window.supabase.createClient(
+// ✅ ONLY ONE SUPABASE INSTANCE
+const supabaseClient = window.supabase.createClient(
     "https://sveexlibgersvtsyggmj.supabase.co",
     "sb_publishable_J-EXRUHIOncT4Q15Ha5ohQ_JPvOMDBR"
 );
@@ -91,7 +91,7 @@ async function signUp() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { error } = await supabaseClient.auth.signUp({ email, password });
 
     if (error) alert(error.message);
     else alert("Check your email to confirm");
@@ -102,7 +102,7 @@ async function login() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
     if (error) alert(error.message);
     else showApp();
@@ -110,7 +110,7 @@ async function login() {
 
 // LOGOUT
 async function logout() {
-    await supabase.auth.signOut();
+    await supabaseClient.auth.signOut();
     document.getElementById("app").style.display = "none";
     document.getElementById("auth").style.display = "block";
 }
@@ -122,16 +122,15 @@ function showApp() {
     loadPosts();
 }
 
-// CHECK USER
+// CHECK SESSION
 async function checkUser() {
-    const { data } = await supabase.auth.getUser();
+    const { data } = await supabaseClient.auth.getUser();
     if (data.user) showApp();
 }
 
 // CREATE POST
 async function createPost() {
-
-    const { data } = await supabase.auth.getUser();
+    const { data } = await supabaseClient.auth.getUser();
 
     if (!data.user) {
         alert("Login required");
@@ -146,7 +145,7 @@ async function createPost() {
         return;
     }
 
-    const { error } = await supabase.from("posts").insert([{
+    const { error } = await supabaseClient.from("posts").insert([{
         content,
         community,
         user_id: data.user.id,
@@ -164,7 +163,7 @@ async function createPost() {
 
 // LOAD POSTS
 async function loadPosts() {
-    const { data } = await supabase
+    const { data } = await supabaseClient
         .from("posts")
         .select("*")
         .order("created_at", { ascending:false });
