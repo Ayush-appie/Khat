@@ -1,764 +1,544 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Khat - Anonymous Community Forum</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --bg: #071d11;
-  --panel: #0f2f1f;
-  --panel-soft: #153927;
-  --card: #16462b;
-  --accent: #43a047;
-  --accent-2: #66bb6a;
-  --text: #e8f5e9;
-  --muted: #b7dbbb;
-  --danger: #ef5350;
-}
-body {
-  font-family: Inter, "Segoe UI", Arial, sans-serif;
-  background: radial-gradient(circle at 30% 0%, #14532d, var(--bg));
-  color: var(--text);
-  min-height: 100vh;
-}
-.container { max-width: 1100px; margin: 0 auto; padding: 16px; }
-.card {
-  background: rgba(15, 47, 31, 0.9);
-  border: 1px solid rgba(102, 187, 106, 0.15);
-  border-radius: 14px;
-  backdrop-filter: blur(5px);
-}
-header.card { padding: 18px; margin-bottom: 14px; }
-h1 { font-size: 1.8rem; color: #b9f6ca; }
-.tagline { color: var(--muted); margin-top: 4px; }
-.pill {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid rgba(102, 187, 106, 0.25);
-  background: rgba(67, 160, 71, 0.12);
-  color: var(--text);
-  border-radius: 999px;
-  font-size: 0.8rem;
-  padding: 5px 10px;
-  margin-right: 8px;
-}
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 12px;
-  align-items: center;
-}
-input, textarea, select, button {
-  border-radius: 10px;
-  border: 1px solid rgba(102, 187, 106, 0.3);
-  color: var(--text);
-  background: #0e321f;
-  font-size: 0.95rem;
-}
-input, textarea, select { width: 100%; padding: 10px 12px; }
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  border-color: var(--accent-2);
-  box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.18);
-}
-button {
-  padding: 9px 14px;
-  cursor: pointer;
-  background: linear-gradient(180deg, #43a047, #2e7d32);
-  transition: transform .12s ease, opacity .2s ease;
-}
-button:hover { transform: translateY(-1px); opacity: .95; }
-button.secondary { background: #1b5e20; }
-button.danger { background: linear-gradient(180deg, #e53935, #b71c1c); }
-
-#loginGate {
-  max-width: 440px;
-  margin: 8vh auto 0;
-  padding: 20px;
-}
-.hidden { display: none !important; }
-
-.main-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-}
-
-.search-row {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr;
-  gap: 10px;
-}
-.section { padding: 16px; }
-.section h2 { font-size: 1.05rem; margin-bottom: 12px; color: #c8e6c9; }
-#communityNav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-#communityNav button.active {
-  border-color: rgba(200, 230, 201, 0.8);
-  box-shadow: 0 0 0 2px rgba(200, 230, 201, 0.15);
-}
-
-.post {
-  background: rgba(22, 70, 43, 0.9);
-  border: 1px solid rgba(102, 187, 106, 0.15);
-  border-radius: 12px;
-  padding: 13px;
-  margin-bottom: 10px;
-}
-.post-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-}
-.meta { font-size: 0.82rem; color: var(--muted); }
-.post p { margin-top: 10px; white-space: pre-wrap; line-height: 1.4; }
-.post-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
-  align-items: center;
-}
-.vote-chip {
-  background: rgba(102, 187, 106, 0.14);
-  border: 1px solid rgba(102, 187, 106, 0.25);
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 0.8rem;
-}
-.reply {
-  margin-top: 8px;
-  margin-left: 12px;
-  background: rgba(21, 57, 39, 0.9);
-  border-left: 3px solid rgba(102, 187, 106, 0.35);
-  border-radius: 8px;
-  padding: 10px;
-}
-.notice { color: #c8e6c9; font-size: 0.9rem; margin-top: 8px; }
-@media (max-width: 860px) {
-  .search-row { grid-template-columns: 1fr; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khat - KIIT Community Forum</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0b1116;
+      --panel: #131b22;
+      --panel-soft: #1a2430;
+      --text: #dbe3ec;
+      --muted: #8da0b3;
+      --green: #2e8b57;
+      --green-soft: #3ea769;
+      --danger: #e15b64;
+      --border: #273341;
+    }
+    body {
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      background: linear-gradient(180deg, #0a0f14, #0d151c);
+      color: var(--text);
+    }
+    .hidden { display: none !important; }
+    .shell { max-width: 1240px; margin: 0 auto; padding: 18px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .auth-wrap { max-width: 460px; margin: 8vh auto 0; padding: 20px; }
+    .logo { color: #b8f5c8; font-size: 1.6rem; font-weight: 800; }
+    .tag { color: var(--muted); margin-top: 6px; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .stack { display: grid; gap: 10px; margin-top: 14px; }
+    input, textarea, select, button {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      background: #0f161d;
+      padding: 10px 12px;
+      width: 100%;
+    }
+    button {
+      background: linear-gradient(180deg, var(--green-soft), var(--green));
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button.secondary { background: #1e2935; }
+    button.danger { background: linear-gradient(180deg, #ef6f78, #c84652); }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      margin-bottom: 14px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .top-actions { display: flex; gap: 8px; align-items: center; }
+    .pill {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 250px 1fr 300px;
+      gap: 14px;
+    }
+    .side, .right { padding: 12px; height: fit-content; }
+    .side h3, .right h3 { font-size: 0.95rem; margin-bottom: 10px; }
+    .community-btn {
+      width: 100%;
+      text-align: left;
+      margin-bottom: 8px;
+      background: #17212b;
+      border: 1px solid var(--border);
+    }
+    .community-btn.active {
+      border-color: #59c980;
+      box-shadow: 0 0 0 2px rgba(89, 201, 128, 0.12);
+    }
+    .feed-top { padding: 12px; margin-bottom: 10px; }
+    .post {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      gap: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+    }
+    .vote-box {
+      background: #101820;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px;
+      text-align: center;
+    }
+    .meta { font-size: 0.8rem; color: var(--muted); }
+    .title { margin: 4px 0 8px; font-size: 1rem; }
+    .content { color: #d4dde7; white-space: pre-wrap; line-height: 1.38; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .reply { margin-top: 8px; margin-left: 12px; padding: 8px; border-left: 2px solid #355168; background: #10171e; border-radius: 8px; }
+    .moderator-dashboard { margin-top: 14px; padding: 12px; }
+    .notice { color: var(--muted); font-size: 0.9rem; }
+    @media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } }
+  </style>
 </head>
 <body>
-
-<div id="authGate" class="card" style="max-width:460px;margin:7vh auto 0;padding:20px;">
-  <h1>Welcome to Khat</h1>
-  <p class="tagline">KIIT students only</p>
-  <div style="margin-top:12px;">
-    <label for="authEmail">KIIT Email</label>
-    <input id="authEmail" type="email" placeholder="yourname@kiit.ac.in" />
-
-    <label for="authPassword" style="margin-top:8px;display:block;">Password</label>
-    <input id="authPassword" type="password" placeholder="Create a secure password" />
-
-    <div id="signupUsernameWrap" style="margin-top:8px;">
-      <label for="signupUsername">Username (set once)</label>
-      <input id="signupUsername" maxlength="24" placeholder="e.g. ghostleaf" />
-    </div>
-
-    <div class="toolbar" style="margin-top:12px;">
-      <button onclick="signUp()">Sign Up</button>
-      <button class="secondary" onclick="login()">Log In</button>
-    </div>
-    <p class="notice">Use your KIIT email address only.</p>
-  </div>
-</div>
-
-<div id="app" class="container hidden">
-  <header class="card">
-    <h1>💬 Khat</h1>
-    <p class="tagline">Anonymous community • trending now • moderated space</p>
-    <div class="toolbar">
-      <span class="pill" id="activeUserPill"></span>
-      <span class="pill" id="modPill">Member mode</span>
-      <button class="secondary" onclick="toggleModerator()">Refresh Moderator Access</button>
-      <button class="secondary" onclick="logout()">Logout</button>
-    </div>
-  </header>
-
-  <div class="main-grid">
-    <section class="card section">
-      <h2>Discover Communities</h2>
-      <div class="search-row">
-        <input id="communitySearch" placeholder="Search community (e.g. tech, music...)" oninput="applyCommunitySearch()" />
-        <select id="community"></select>
-        <button onclick="createPost()">Create Post</button>
+  <div id="authView" class="card auth-wrap">
+    <div class="logo">Khat</div>
+    <p class="tag">KIIT campus boards</p>
+    <div class="stack">
+      <input id="email" type="email" placeholder="you@kiit.ac.in">
+      <input id="password" type="password" placeholder="Password">
+      <input id="username" maxlength="24" placeholder="Choose username (signup only)">
+      <div class="row">
+        <button onclick="signUp()">Sign Up</button>
+        <button class="secondary" onclick="login()">Log In</button>
       </div>
-      <div style="margin-top:10px;">
-        <textarea id="content" maxlength="500" rows="4" placeholder="Share anonymously..."></textarea>
-      </div>
-      <div id="communityNav" style="margin-top:10px;"></div>
-    </section>
-
-    <section class="card section">
-      <h2>Trending Right Now</h2>
-      <div id="posts"></div>
-    </section>
-
-    <section class="card section hidden" id="moderatorPanel">
-      <h2>Moderator Dashboard</h2>
-      <p class="notice">You can warn users by KIIT email, delete posts, and delete replies.</p>
-      <div id="moderatorFeed"></div>
-    </section>
+      <button class="secondary" onclick="loginWithGoogle()">Continue with Google</button>
+      <p class="notice">Only @kiit.ac.in accounts are allowed.</p>
+    </div>
   </div>
-</div>
 
-<script>
-(() => {
-const supabaseClient = window.supabase.createClient(
-  "https://sveexlibgersvtsyggmj.supabase.co",
-  "sb_publishable_J-EXRUHIOncT4Q15Ha5ohQ_JPvOMDBR"
-);
+  <div id="appView" class="shell hidden">
+    <header class="card topbar">
+      <div>
+        <div class="logo">Khat</div>
+        <div class="meta">college boards inspired by imageboards + forums</div>
+      </div>
+      <div class="top-actions">
+        <span class="pill" id="userPill"></span>
+        <span class="pill" id="modPill">member</span>
+        <button class="secondary" onclick="logout()">Logout</button>
+      </div>
+    </header>
 
-const COMMUNITIES = [
-  "k/general", "k/chess", "k/tech", "k/sports", "k/music", "k/study",
-  "k/startups", "k/memes", "k/placements", "k/coding"
-];
+    <main class="layout">
+      <aside class="card side">
+        <h3>Communities</h3>
+        <input id="communitySearch" placeholder="Search communities" oninput="renderCommunities()">
+        <div style="margin-top: 10px;" id="communityList"></div>
+      </aside>
 
-const FALLBACK_PROFANITY_WORDS = [
-  // English
-  "fuck", "fucker", "shit", "bitch", "bastard", "asshole", "motherfucker",
-  // Hindi transliteration + script
-  "madarchod", "bhenchod", "behenchod", "chutiya", "gaand", "gandu", "harami", "रंडी", "हरामी",
-  // Bangla transliteration + script
-  "magi", "choda", "chod", "bal", "হারামি", "মাগি",
-  // Odia transliteration + script
-  "chhinal", "randi", "gandu", "harami", "ହରାମି", "ରାଣ୍ଡି"
-];
-
-let currentCommunity = "all";
-let allPosts = [];
-let userId = null;
-let userEmail = "";
-let userName = "";
-let moderatorMode = false;
-let profanityWords = [...FALLBACK_PROFANITY_WORDS];
-const voteSummaryByPost = {};
-const userVoteByPost = {};
-const hiddenPosts = new Set();
-const hiddenReplies = new Set();
-
-function showApp() {
-  document.getElementById("authGate").classList.add("hidden");
-  document.getElementById("app").classList.remove("hidden");
-  document.getElementById("activeUserPill").textContent = "@" + userName + " • " + userEmail;
-  setModeratorUI();
-}
-
-function setModeratorUI() {
-  const modPill = document.getElementById("modPill");
-  modPill.textContent = moderatorMode ? "Moderator mode" : "Member mode";
-  modPill.style.background = moderatorMode ? "rgba(239,83,80,0.14)" : "rgba(67,160,71,0.12)";
-}
-
-async function toggleModerator() {
-  await refreshModeratorStatus(true);
-  setModeratorUI();
-  renderPosts();
-}
-
-async function init() {
-  buildCommunityOptions(COMMUNITIES);
-  renderCommunityNav(COMMUNITIES);
-  await loadServerProfanityWords();
-  await refreshModeratorStatus(false);
-  await loadPosts();
-}
-
-async function signUp() {
-  const email = document.getElementById("authEmail").value.trim().toLowerCase();
-  const password = document.getElementById("authPassword").value;
-  const username = document.getElementById("signupUsername").value.trim().toLowerCase();
-
-  if (!email.endsWith("@kiit.ac.in")) {
-    alert("Only KIIT students can sign up (xxxx@kiit.ac.in).");
-    return;
-  }
-  if (username.length < 3) {
-    alert("Username must be at least 3 characters.");
-    return;
-  }
-
-  const { data: existingUser } = await supabaseClient
-    .from("profiles")
-    .select("id")
-    .eq("username", username)
-    .maybeSingle();
-
-  if (existingUser) {
-    alert("Username already taken.");
-    return;
-  }
-
-  const { data, error } = await supabaseClient.auth.signUp({
-    email,
-    password,
-    options: { data: { username } }
-  });
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  if (data.user) {
-    await ensureProfile(data.user);
-    await bootstrapUserFromSession();
-    showApp();
-    await init();
-  } else {
-    alert("Signup successful. Verify email if required, then log in.");
-  }
-}
-
-async function login() {
-  const email = document.getElementById("authEmail").value.trim().toLowerCase();
-  const password = document.getElementById("authPassword").value;
-  if (!email.endsWith("@kiit.ac.in")) {
-    alert("Only KIIT students can log in.");
-    return;
-  }
-
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  await bootstrapUserFromSession();
-  showApp();
-  await init();
-}
-
-async function logout() {
-  await supabaseClient.auth.signOut();
-  document.getElementById("app").classList.add("hidden");
-  document.getElementById("authGate").classList.remove("hidden");
-}
-
-async function bootstrapUserFromSession() {
-  const { data } = await supabaseClient.auth.getUser();
-  if (!data.user) return;
-  await ensureProfile(data.user);
-  userId = data.user.id;
-  userEmail = data.user.email || "";
-
-  const { data: profile } = await supabaseClient
-    .from("profiles")
-    .select("username")
-    .eq("id", userId)
-    .maybeSingle();
-  userName = (profile && profile.username) ? profile.username : "kiit_user";
-}
-
-async function ensureProfile(user) {
-  const { data: existing } = await supabaseClient
-    .from("profiles")
-    .select("id")
-    .eq("id", user.id)
-    .maybeSingle();
-  if (existing) return;
-
-  const emailName = (user.email || "").split("@")[0] || "kiit_user";
-  const preferred = String((user.user_metadata && user.user_metadata.username) || emailName).toLowerCase().replace(/[^a-z0-9_]/g, "_").slice(0, 24) || "kiit_user";
-  await supabaseClient.from("profiles").insert([{
-    id: user.id,
-    email: user.email,
-    username: preferred
-  }]);
-}
-
-function buildCommunityOptions(communities) {
-  const select = document.getElementById("community");
-  select.innerHTML = `<option value="">Select community</option>` + communities.map((c) => `<option value="${c}">${c}</option>`).join("");
-}
-
-function renderCommunityNav(communities) {
-  const nav = document.getElementById("communityNav");
-  nav.innerHTML = `<button class="${currentCommunity === "all" ? "active" : ""}" onclick="filterCommunity('all')">All</button>` +
-    communities.map((c) => `<button class="${currentCommunity === c ? "active" : ""}" onclick="filterCommunity('${c}')">${c}</button>`).join("");
-}
-
-function applyCommunitySearch() {
-  const q = document.getElementById("communitySearch").value.trim().toLowerCase();
-  const filtered = !q ? COMMUNITIES : COMMUNITIES.filter((c) => c.toLowerCase().includes(q));
-  buildCommunityOptions(filtered);
-  renderCommunityNav(filtered);
-}
-
-function filterCommunity(community) {
-  currentCommunity = community;
-  applyCommunitySearch();
-  renderPosts();
-}
-
-function hasProfanity(text) {
-  const lower = text.toLowerCase();
-  return profanityWords.some((word) => lower.includes(word.toLowerCase()));
-}
-
-function scorePost(post) {
-  const vote = voteSummaryByPost[post.id] || { up: 0, down: 0 };
-  const created = new Date(post.created_at).getTime();
-  const ageHours = Math.max(1, (Date.now() - created) / (1000 * 60 * 60));
-  return ((vote.up - vote.down) * 3) + (12 / ageHours);
-}
-
-async function loadServerProfanityWords() {
-  const { data, error } = await supabaseClient
-    .from("profanity_terms")
-    .select("term")
-    .eq("is_active", true);
-
-  if (!error && data && data.length) {
-    profanityWords = data.map((item) => String(item.term || "").trim()).filter(Boolean);
-  } else {
-    profanityWords = [...FALLBACK_PROFANITY_WORDS];
-  }
-}
-
-async function refreshModeratorStatus(showMessage) {
-  const { data, error } = await supabaseClient
-    .from("moderators")
-    .select("user_id")
-    .eq("user_id", userId)
-    .maybeSingle();
-
-  moderatorMode = !error && !!data;
-  const panel = document.getElementById("moderatorPanel");
-  if (moderatorMode) {
-    panel.classList.remove("hidden");
-    renderModeratorFeed();
-  } else {
-    panel.classList.add("hidden");
-  }
-  if (showMessage && !moderatorMode) {
-    alert("No moderator access found for this anonymous account.");
-  }
-}
-
-async function createPost() {
-  const content = document.getElementById("content").value.trim();
-  const community = document.getElementById("community").value;
-  if (!content || !community) {
-    alert("Please select community and write your post.");
-    return;
-  }
-  if (hasProfanity(content)) {
-    alert("Post blocked: profanity/abusive language detected.");
-    return;
-  }
-
-  const { error } = await supabaseClient.from("posts").insert([{
-    content,
-    community,
-    user_id: userId,
-    user_email: userEmail,
-    username: userName,
-    anonymous_id: userId,
-    anonymous_name: userName,
-    created_at: new Date().toISOString()
-  }]);
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  document.getElementById("content").value = "";
-  loadPosts();
-}
-
-async function loadPosts() {
-  const { data, error } = await supabaseClient
-    .from("posts")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(80);
-
-  if (error) {
-    console.error(error);
-    return;
-  }
-
-  allPosts = data || [];
-  await hydrateServerState();
-  renderPosts();
-}
-
-async function hydrateServerState() {
-  Object.keys(voteSummaryByPost).forEach((k) => delete voteSummaryByPost[k]);
-  Object.keys(userVoteByPost).forEach((k) => delete userVoteByPost[k]);
-  hiddenPosts.clear();
-  hiddenReplies.clear();
-
-  const postIds = allPosts.map((p) => p.id);
-  if (!postIds.length) return;
-
-  const [{ data: voteRows }, { data: userRows }, { data: modRows }] = await Promise.all([
-    supabaseClient.from("post_votes").select("post_id,vote_value").in("post_id", postIds),
-    supabaseClient.from("post_votes").select("post_id,vote_value").eq("user_id", userId).in("post_id", postIds),
-    supabaseClient.from("moderation_actions").select("target_type,target_id").eq("action", "hide")
-  ]);
-
-  (voteRows || []).forEach((row) => {
-    if (!voteSummaryByPost[row.post_id]) voteSummaryByPost[row.post_id] = { up: 0, down: 0 };
-    if (row.vote_value === 1) voteSummaryByPost[row.post_id].up += 1;
-    if (row.vote_value === -1) voteSummaryByPost[row.post_id].down += 1;
-  });
-
-  (userRows || []).forEach((row) => {
-    userVoteByPost[row.post_id] = row.vote_value;
-  });
-
-  (modRows || []).forEach((row) => {
-    if (row.target_type === "post") hiddenPosts.add(Number(row.target_id));
-    if (row.target_type === "reply") hiddenReplies.add(Number(row.target_id));
-  });
-}
-
-function renderPosts() {
-  const postsContainer = document.getElementById("posts");
-  const visible = allPosts
-    .filter((p) => !hiddenPosts.has(p.id))
-    .filter((p) => currentCommunity === "all" || p.community === currentCommunity)
-    .sort((a, b) => scorePost(b) - scorePost(a));
-
-  if (!visible.length) {
-    postsContainer.innerHTML = "<p class='notice'>No posts available for this filter.</p>";
-    return;
-  }
-
-  postsContainer.innerHTML = visible.map((p) => {
-    const vote = voteSummaryByPost[p.id] || { up: 0, down: 0 };
-    const score = vote.up - vote.down;
-    const userVote = userVoteByPost[p.id] || 0;
-    return `
-      <article class="post">
-        <div class="post-head">
-          <div>
-            <div class="meta">${escapeHtml(p.community)} • ${timeAgo(p.created_at)}</div>
-            <div class="meta">Posted by @${escapeHtml(p.username || p.anonymous_name || "kiit_user")}</div>
+      <section>
+        <div class="card feed-top">
+          <div class="row">
+            <select id="communitySelect" style="max-width: 220px;"></select>
+            <input id="postTitle" placeholder="Post title">
           </div>
-          <span class="vote-chip">Score: ${score}</span>
+          <div style="margin-top: 10px;">
+            <textarea id="postContent" rows="3" maxlength="700" placeholder="Write your post..."></textarea>
+          </div>
+          <div class="row" style="margin-top: 10px;">
+            <button style="max-width: 170px;" onclick="createPost()">Create Post</button>
+          </div>
         </div>
-        <p>${escapeHtml(p.content)}</p>
-        <div class="post-actions">
-          <button onclick="votePost(${p.id}, 1)">${userVote === 1 ? "✅ " : ""}⬆ Upvote</button>
-          <button class="secondary" onclick="votePost(${p.id}, -1)">${userVote === -1 ? "✅ " : ""}⬇ Downvote</button>
-          <button class="secondary" onclick="toggleReply(${p.id})">Reply</button>
-          ${moderatorMode ? `<button class="danger" onclick="hidePost(${p.id})">Hide Post</button>` : ""}
+        <div id="feed"></div>
+      </section>
+
+      <aside class="card right">
+        <h3>About</h3>
+        <p class="notice">Local KIIT forum with persistent usernames, voting, replies, and moderation.</p>
+        <div id="moderatorDashboard" class="moderator-dashboard hidden">
+          <h3 style="margin-bottom:8px;">Moderator Dashboard</h3>
+          <div id="modFeed"></div>
         </div>
-        <div id="reply-${p.id}" class="hidden" style="margin-top:8px;">
-          <textarea id="reply-text-${p.id}" rows="2" placeholder="Reply anonymously..."></textarea>
-          <button onclick="sendReply(${p.id})">Send Reply</button>
-        </div>
-        <div id="replies-${p.id}" style="margin-top:8px;"></div>
-      </article>
-    `;
-  }).join("");
+      </aside>
+    </main>
+  </div>
 
-  visible.forEach((p) => loadReplies(p.id));
-}
+  <script>
+    (() => {
+      const supabaseClient = window.supabase.createClient(
+        "https://sveexlibgersvtsyggmj.supabase.co",
+        "sb_publishable_J-EXRUHIOncT4Q15Ha5ohQ_JPvOMDBR"
+      );
 
-async function votePost(postId, direction) {
-  const currentVote = userVoteByPost[postId] || 0;
-  if (currentVote === direction) {
-    await supabaseClient.from("post_votes")
-      .delete()
-      .eq("post_id", postId)
-      .eq("user_id", userId);
-  } else {
-    await supabaseClient.from("post_votes").upsert([{
-      post_id: postId,
-      user_id: userId,
-      vote_value: direction,
-      created_at: new Date().toISOString()
-    }], { onConflict: "post_id,user_id" });
-  }
-  await hydrateServerState();
-  renderPosts();
-}
+      const COMMUNITIES = ["k/general", "k/tech", "k/chess", "k/sports", "k/music", "k/study", "k/placements", "k/memes"];
+      const FALLBACK_BAD_WORDS = ["fuck","shit","bitch","madarchod","bhenchod","chutiya","হারামি","ମାଗି","ହରାମି"];
 
-async function hidePost(postId) {
-  if (!moderatorMode) return;
-  await supabaseClient.from("moderation_actions").insert([{
-    target_type: "post",
-    target_id: postId,
-    action: "hide",
-    moderator_user_id: userId,
-    created_at: new Date().toISOString()
-  }]);
+      let user = null;
+      let profile = null;
+      let currentCommunity = "all";
+      let posts = [];
+      let userVotes = {};
+      let votesByPost = {};
+      let hiddenPosts = new Set();
+      let hiddenReplies = new Set();
+      let profanityWords = [...FALLBACK_BAD_WORDS];
+      let isModerator = false;
 
-  await supabaseClient.from("posts").delete().eq("id", postId);
-  await supabaseClient.from("replies").delete().eq("post_id", postId);
-  await hydrateServerState();
-  renderPosts();
-  renderModeratorFeed();
-}
+      function showAuth() {
+        document.getElementById("authView").classList.remove("hidden");
+        document.getElementById("appView").classList.add("hidden");
+      }
 
-async function sendReply(postId) {
-  const input = document.getElementById(`reply-text-${postId}`);
-  const text = input.value.trim();
-  if (!text) {
-    alert("Reply cannot be empty.");
-    return;
-  }
-  if (hasProfanity(text)) {
-    alert("Reply blocked: profanity/abusive language detected.");
-    return;
-  }
+      function showApp() {
+        document.getElementById("authView").classList.add("hidden");
+        document.getElementById("appView").classList.remove("hidden");
+      }
 
-  const { error } = await supabaseClient.from("replies").insert([{
-    post_id: postId,
-    content: text,
-    user_id: userId,
-    user_email: userEmail,
-    username: userName,
-    anonymous_id: userId,
-    anonymous_name: userName,
-    created_at: new Date().toISOString()
-  }]);
+      function kiitEmail(email) {
+        return String(email || "").toLowerCase().endsWith("@kiit.ac.in");
+      }
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
+      async function signUp() {
+        const email = document.getElementById("email").value.trim().toLowerCase();
+        const password = document.getElementById("password").value;
+        const username = document.getElementById("username").value.trim().toLowerCase();
+        if (!kiitEmail(email)) return alert("Use a valid @kiit.ac.in email.");
+        if (username.length < 3) return alert("Username must be at least 3 characters.");
 
-  input.value = "";
-  loadReplies(postId);
-}
+        const { data: uTaken } = await supabaseClient.from("profiles").select("id").eq("username", username).maybeSingle();
+        if (uTaken) return alert("Username already taken.");
 
-async function loadReplies(postId) {
-  const { data, error } = await supabaseClient
-    .from("replies")
-    .select("*")
-    .eq("post_id", postId)
-    .order("created_at", { ascending: true });
+        const { data, error } = await supabaseClient.auth.signUp({
+          email, password, options: { data: { username } }
+        });
+        if (error) return alert(error.message);
+        if (!data.user) return alert("Check your email for verification, then login.");
 
-  if (error) {
-    console.error(error);
-    return;
-  }
+        await ensureProfile(data.user, username);
+        await bootstrap();
+      }
 
-  const div = document.getElementById(`replies-${postId}`);
-  const replies = (data || []).filter((r) => !hiddenReplies.has(r.id));
-  if (!replies.length) {
-    div.innerHTML = "";
-    return;
-  }
+      async function login() {
+        const email = document.getElementById("email").value.trim().toLowerCase();
+        const password = document.getElementById("password").value;
+        if (!kiitEmail(email)) return alert("Only @kiit.ac.in users can login.");
+        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) return alert(error.message);
+        await bootstrap();
+      }
 
-  div.innerHTML = replies.map((r) => `
-    <div class="reply">
-      <div class="meta">${timeAgo(r.created_at)} • by @${escapeHtml(r.username || r.anonymous_name || "kiit_user")}</div>
-      <p>${escapeHtml(r.content)}</p>
-      ${moderatorMode ? `<button class="danger" onclick="hideReply(${r.id}, ${postId})">Delete Reply</button>` : ""}
-    </div>
-  `).join("");
-}
+      async function loginWithGoogle() {
+        await supabaseClient.auth.signInWithOAuth({
+          provider: "google",
+          options: { redirectTo: window.location.href }
+        });
+      }
 
-async function hideReply(replyId, postId) {
-  if (!moderatorMode) return;
-  await supabaseClient.from("moderation_actions").insert([{
-    target_type: "reply",
-    target_id: replyId,
-    action: "hide",
-    moderator_user_id: userId,
-    created_at: new Date().toISOString()
-  }]);
-  await supabaseClient.from("replies").delete().eq("id", replyId);
-  await hydrateServerState();
-  loadReplies(postId);
-  renderModeratorFeed();
-}
+      async function logout() {
+        await supabaseClient.auth.signOut();
+        showAuth();
+      }
 
-async function warnUser(postId) {
-  if (!moderatorMode) return;
-  const post = allPosts.find((p) => Number(p.id) === Number(postId));
-  if (!post || !post.user_id) return;
-  const reason = prompt("Warning reason for " + (post.user_email || "user") + ":");
-  if (!reason) return;
-  const { error } = await supabaseClient.from("moderation_warnings").insert([{
-    target_user_id: post.user_id,
-    target_email: post.user_email || null,
-    post_id: post.id,
-    reason,
-    moderator_user_id: userId,
-    created_at: new Date().toISOString()
-  }]);
-  if (error) alert(error.message);
-  else alert("Warning sent for " + (post.user_email || "user") + ".");
-}
+      async function ensureProfile(sUser, forcedUsername) {
+        const { data: existing } = await supabaseClient.from("profiles").select("id").eq("id", sUser.id).maybeSingle();
+        if (existing) return;
+        const fromMeta = sUser.user_metadata && sUser.user_metadata.username;
+        const fallback = (sUser.email || "kiit_user").split("@")[0];
+        const username = String(forcedUsername || fromMeta || fallback).toLowerCase().replace(/[^a-z0-9_]/g, "_").slice(0, 24);
+        await supabaseClient.from("profiles").insert([{ id: sUser.id, email: sUser.email, username }]);
+      }
 
-function renderModeratorFeed() {
-  if (!moderatorMode) return;
-  const target = document.getElementById("moderatorFeed");
-  const latest = [...allPosts].slice(0, 20);
-  target.innerHTML = latest.map((p) => `
-    <div class="post">
-      <div class="meta">${escapeHtml(p.community)} • @${escapeHtml(p.username || "kiit_user")} • ${escapeHtml(p.user_email || "")}</div>
-      <p>${escapeHtml(p.content)}</p>
-      <div class="post-actions">
-        <button class="secondary" onclick="warnUser(${p.id})">Warn User</button>
-        <button class="danger" onclick="hidePost(${p.id})">Delete Post</button>
-      </div>
-    </div>
-  `).join("");
-}
+      async function bootstrap() {
+        const { data } = await supabaseClient.auth.getUser();
+        if (!data.user) return showAuth();
+        if (!kiitEmail(data.user.email)) {
+          await supabaseClient.auth.signOut();
+          return alert("Only @kiit.ac.in users are allowed.");
+        }
 
-function toggleReply(id) {
-  const box = document.getElementById(`reply-${id}`);
-  box.classList.toggle("hidden");
-}
+        user = data.user;
+        await ensureProfile(user);
+        const { data: p } = await supabaseClient.from("profiles").select("*").eq("id", user.id).maybeSingle();
+        profile = p;
+        if (!profile) return alert("Could not load profile.");
 
-function timeAgo(timestamp) {
-  const diffSec = (Date.now() - new Date(timestamp).getTime()) / 1000;
-  if (diffSec < 60) return "just now";
-  if (diffSec < 3600) return Math.floor(diffSec / 60) + "m ago";
-  if (diffSec < 86400) return Math.floor(diffSec / 3600) + "h ago";
-  return Math.floor(diffSec / 86400) + "d ago";
-}
+        const { data: mod } = await supabaseClient.from("moderators").select("id").eq("user_id", user.id).maybeSingle();
+        isModerator = !!mod;
+        document.getElementById("modPill").textContent = isModerator ? "moderator" : "member";
+        document.getElementById("userPill").textContent = "@" + profile.username;
+        document.getElementById("moderatorDashboard").classList.toggle("hidden", !isModerator);
 
-function escapeHtml(text) {
-  const d = document.createElement("div");
-  d.textContent = text || "";
-  return d.innerHTML;
-}
+        await loadProfanity();
+        renderCommunities();
+        fillCommunitySelect();
+        showApp();
+        await refreshFeed();
+      }
 
-window.signUp = signUp;
-window.login = login;
-window.logout = logout;
-window.toggleModerator = toggleModerator;
-window.applyCommunitySearch = applyCommunitySearch;
-window.filterCommunity = filterCommunity;
-window.createPost = createPost;
-window.votePost = votePost;
-window.toggleReply = toggleReply;
-window.sendReply = sendReply;
-window.hidePost = hidePost;
-window.hideReply = hideReply;
-window.warnUser = warnUser;
+      async function loadProfanity() {
+        const { data } = await supabaseClient.from("profanity_terms").select("term").eq("is_active", true);
+        if (data && data.length) profanityWords = data.map(x => String(x.term || "").toLowerCase());
+      }
 
-supabaseClient.auth.getUser().then(async ({ data }) => {
-  if (data.user) {
-    await bootstrapUserFromSession();
-    showApp();
-    await init();
-  } else {
-    document.getElementById("authGate").classList.remove("hidden");
-  }
-});
-setInterval(loadPosts, 30000);
-})();
-</script>
+      function hasBadWords(text) {
+        const l = String(text || "").toLowerCase();
+        return profanityWords.some(w => l.includes(w));
+      }
+
+      function fillCommunitySelect() {
+        const s = document.getElementById("communitySelect");
+        s.innerHTML = `<option value="">Select community</option>` + COMMUNITIES.map(c => `<option value="${c}">${c}</option>`).join("");
+      }
+
+      function renderCommunities() {
+        const q = document.getElementById("communitySearch").value.trim().toLowerCase();
+        const list = !q ? COMMUNITIES : COMMUNITIES.filter(c => c.includes(q));
+        const root = document.getElementById("communityList");
+        root.innerHTML = `<button class="community-btn ${currentCommunity === "all" ? "active" : ""}" onclick="setCommunity('all')">All</button>` +
+          list.map(c => `<button class="community-btn ${currentCommunity === c ? "active" : ""}" onclick="setCommunity('${c}')">${c}</button>`).join("");
+      }
+
+      async function refreshFeed() {
+        const { data: postData } = await supabaseClient.from("posts").select("*").order("created_at", { ascending: false }).limit(100);
+        posts = postData || [];
+        await hydrateState();
+        renderFeed();
+        if (isModerator) renderModFeed();
+      }
+
+      async function hydrateState() {
+        userVotes = {};
+        votesByPost = {};
+        hiddenPosts = new Set();
+        hiddenReplies = new Set();
+        const ids = posts.map(p => p.id);
+        if (!ids.length) return;
+
+        const [{ data: votes }, { data: myVotes }, { data: mods }] = await Promise.all([
+          supabaseClient.from("post_votes").select("post_id,vote_value").in("post_id", ids),
+          supabaseClient.from("post_votes").select("post_id,vote_value").eq("user_id", user.id).in("post_id", ids),
+          supabaseClient.from("moderation_actions").select("target_type,target_id").eq("action", "hide")
+        ]);
+
+        (votes || []).forEach(v => {
+          if (!votesByPost[v.post_id]) votesByPost[v.post_id] = { up: 0, down: 0 };
+          if (v.vote_value === 1) votesByPost[v.post_id].up += 1;
+          if (v.vote_value === -1) votesByPost[v.post_id].down += 1;
+        });
+        (myVotes || []).forEach(v => { userVotes[v.post_id] = v.vote_value; });
+        (mods || []).forEach(m => {
+          if (m.target_type === "post") hiddenPosts.add(Number(m.target_id));
+          if (m.target_type === "reply") hiddenReplies.add(Number(m.target_id));
+        });
+      }
+
+      function score(post) {
+        const v = votesByPost[post.id] || { up: 0, down: 0 };
+        const ageHr = Math.max(1, (Date.now() - new Date(post.created_at).getTime()) / 36e5);
+        return (v.up - v.down) * 3 + (8 / ageHr);
+      }
+
+      function renderFeed() {
+        const root = document.getElementById("feed");
+        const visible = posts
+          .filter(p => !hiddenPosts.has(p.id))
+          .filter(p => currentCommunity === "all" || p.community === currentCommunity)
+          .sort((a, b) => score(b) - score(a));
+
+        if (!visible.length) {
+          root.innerHTML = `<div class="card" style="padding:12px;">No posts yet.</div>`;
+          return;
+        }
+
+        root.innerHTML = visible.map(p => {
+          const v = votesByPost[p.id] || { up: 0, down: 0 };
+          const my = userVotes[p.id] || 0;
+          const title = p.title || p.content?.slice(0, 70) || "Untitled";
+          return `
+            <article class="post">
+              <div class="vote-box">
+                <button onclick="votePost(${p.id},1)">${my === 1 ? "✓ " : ""}▲</button>
+                <div style="padding:6px 0;font-weight:700;">${v.up - v.down}</div>
+                <button class="secondary" onclick="votePost(${p.id},-1)">${my === -1 ? "✓ " : ""}▼</button>
+              </div>
+              <div>
+                <div class="meta">${escapeHtml(p.community || "k/general")} • posted ${timeAgo(p.created_at)} by @${escapeHtml(p.username || "kiit_user")}</div>
+                <h4 class="title">${escapeHtml(title)}</h4>
+                <div class="content">${escapeHtml(p.content || "")}</div>
+                <div class="actions">
+                  <button class="secondary" onclick="toggleReplyBox(${p.id})">Reply</button>
+                  ${isModerator ? `<button class="danger" onclick="deletePost(${p.id})">Delete Post</button><button class="secondary" onclick="warnUser(${p.id})">Warn User</button>` : ""}
+                </div>
+                <div id="replybox-${p.id}" class="hidden" style="margin-top:8px;">
+                  <textarea id="replytext-${p.id}" rows="2" placeholder="Write reply"></textarea>
+                  <button style="margin-top:6px;max-width:140px;" onclick="sendReply(${p.id})">Post Reply</button>
+                </div>
+                <div id="replies-${p.id}" style="margin-top:8px;"></div>
+              </div>
+            </article>
+          `;
+        }).join("");
+
+        visible.forEach(p => loadReplies(p.id));
+      }
+
+      async function createPost() {
+        const title = document.getElementById("postTitle").value.trim();
+        const content = document.getElementById("postContent").value.trim();
+        const community = document.getElementById("communitySelect").value;
+        if (!community || !content) return alert("Select community and add post content.");
+        if (hasBadWords(title + " " + content)) return alert("Please keep language respectful.");
+
+        const { error } = await supabaseClient.from("posts").insert([{
+          title, content, community, user_id: user.id, user_email: user.email, username: profile.username,
+          anonymous_id: user.id, anonymous_name: profile.username, created_at: new Date().toISOString()
+        }]);
+        if (error) return alert(error.message);
+        document.getElementById("postTitle").value = "";
+        document.getElementById("postContent").value = "";
+        await refreshFeed();
+      }
+
+      async function votePost(postId, val) {
+        const current = userVotes[postId] || 0;
+        if (current === val) {
+          await supabaseClient.from("post_votes").delete().eq("post_id", postId).eq("user_id", user.id);
+        } else {
+          await supabaseClient.from("post_votes").upsert([{
+            post_id: postId, user_id: user.id, vote_value: val, created_at: new Date().toISOString()
+          }], { onConflict: "post_id,user_id" });
+        }
+        await refreshFeed();
+      }
+
+      function toggleReplyBox(postId) {
+        document.getElementById(`replybox-${postId}`).classList.toggle("hidden");
+      }
+
+      async function sendReply(postId) {
+        const input = document.getElementById(`replytext-${postId}`);
+        const content = input.value.trim();
+        if (!content) return;
+        if (hasBadWords(content)) return alert("Please keep language respectful.");
+
+        const { error } = await supabaseClient.from("replies").insert([{
+          post_id: postId, content, user_id: user.id, user_email: user.email, username: profile.username,
+          anonymous_id: user.id, anonymous_name: profile.username, created_at: new Date().toISOString()
+        }]);
+        if (error) return alert(error.message);
+        input.value = "";
+        await loadReplies(postId);
+      }
+
+      async function loadReplies(postId) {
+        const { data } = await supabaseClient.from("replies").select("*").eq("post_id", postId).order("created_at", { ascending: true });
+        const root = document.getElementById(`replies-${postId}`);
+        const rows = (data || []).filter(r => !hiddenReplies.has(r.id));
+        root.innerHTML = rows.map(r => `
+          <div class="reply">
+            <div class="meta">@${escapeHtml(r.username || "kiit_user")} • ${timeAgo(r.created_at)}</div>
+            <div class="content">${escapeHtml(r.content || "")}</div>
+            ${isModerator ? `<div class="actions"><button class="danger" onclick="deleteReply(${r.id},${postId})">Delete Reply</button></div>` : ""}
+          </div>
+        `).join("");
+      }
+
+      async function deletePost(postId) {
+        if (!isModerator) return;
+        await supabaseClient.from("moderation_actions").insert([{ target_type: "post", target_id: postId, action: "hide", moderator_user_id: user.id }]);
+        await supabaseClient.from("posts").delete().eq("id", postId);
+        await supabaseClient.from("replies").delete().eq("post_id", postId);
+        await refreshFeed();
+      }
+
+      async function deleteReply(replyId, postId) {
+        if (!isModerator) return;
+        await supabaseClient.from("moderation_actions").insert([{ target_type: "reply", target_id: replyId, action: "hide", moderator_user_id: user.id }]);
+        await supabaseClient.from("replies").delete().eq("id", replyId);
+        await loadReplies(postId);
+      }
+
+      async function warnUser(postId) {
+        if (!isModerator) return;
+        const p = posts.find(x => Number(x.id) === Number(postId));
+        if (!p) return;
+        const reason = prompt(`Warning reason for ${p.user_email || "student"}:`) || "";
+        if (!reason.trim()) return;
+        const { error } = await supabaseClient.from("moderation_warnings").insert([{
+          target_user_id: p.user_id, target_email: p.user_email, post_id: p.id, reason, moderator_user_id: user.id
+        }]);
+        if (error) alert(error.message); else alert("Warning added.");
+      }
+
+      function renderModFeed() {
+        const root = document.getElementById("modFeed");
+        const sample = posts.slice(0, 12);
+        root.innerHTML = sample.map(p => `
+          <div class="card" style="padding:8px;margin-bottom:8px;">
+            <div class="meta">${escapeHtml(p.user_email || "")}</div>
+            <div style="margin:4px 0;">${escapeHtml((p.title || p.content || "").slice(0, 85))}</div>
+            <div class="row">
+              <button class="secondary" onclick="warnUser(${p.id})">Warn</button>
+              <button class="danger" onclick="deletePost(${p.id})">Delete</button>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      function setCommunity(c) {
+        currentCommunity = c;
+        renderCommunities();
+        renderFeed();
+      }
+
+      function escapeHtml(t) {
+        const d = document.createElement("div");
+        d.textContent = t || "";
+        return d.innerHTML;
+      }
+
+      function timeAgo(ts) {
+        const s = (Date.now() - new Date(ts).getTime()) / 1000;
+        if (s < 60) return "just now";
+        if (s < 3600) return Math.floor(s / 60) + "m ago";
+        if (s < 86400) return Math.floor(s / 3600) + "h ago";
+        return Math.floor(s / 86400) + "d ago";
+      }
+
+      window.signUp = signUp;
+      window.login = login;
+      window.loginWithGoogle = loginWithGoogle;
+      window.logout = logout;
+      window.setCommunity = setCommunity;
+      window.createPost = createPost;
+      window.votePost = votePost;
+      window.toggleReplyBox = toggleReplyBox;
+      window.sendReply = sendReply;
+      window.deletePost = deletePost;
+      window.deleteReply = deleteReply;
+      window.warnUser = warnUser;
+      window.renderCommunities = renderCommunities;
+
+      supabaseClient.auth.onAuthStateChange(async () => { await bootstrap(); });
+      bootstrap();
+      setInterval(refreshFeed, 30000);
+    })();
+  </script>
 </body>
 </html>
