@@ -8,176 +8,713 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0b1116;
-      --panel: #131b22;
-      --panel-soft: #1a2430;
-      --text: #dbe3ec;
-      --muted: #8da0b3;
-      --green: #2e8b57;
-      --green-soft: #3ea769;
-      --danger: #e15b64;
-      --border: #273341;
+      --bg: #0e1217;
+      --panel: #1a1a1b;
+      --hover: #272729;
+      --border: #343536;
+      --text: #d7dadc;
+      --text-muted: #818384;
+      --primary: #ff4500;
+      --primary-hover: #ff5700;
+      --upvote: #ff8b60;
+      --downvote: #9494ff;
+      --green: #46d160;
+      --danger: #ea0027;
     }
     body {
-      font-family: Inter, Segoe UI, Arial, sans-serif;
-      background: linear-gradient(180deg, #0a0f14, #0d151c);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      background: var(--bg);
       color: var(--text);
+      line-height: 1.5;
     }
     .hidden { display: none !important; }
-    .shell { max-width: 1240px; margin: 0 auto; padding: 18px; }
-    .card {
+    
+    /* AUTH SCREEN */
+    .auth-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #0e1217 0%, #1a1a1b 100%);
+    }
+    .auth-box {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 12px;
-    }
-    .auth-wrap { max-width: 460px; margin: 8vh auto 0; padding: 20px; }
-    .logo { color: #b8f5c8; font-size: 1.6rem; font-weight: 800; }
-    .tag { color: var(--muted); margin-top: 6px; }
-    .row { display: flex; gap: 10px; flex-wrap: wrap; }
-    .stack { display: grid; gap: 10px; margin-top: 14px; }
-    input, textarea, select, button {
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      background: #0f161d;
-      padding: 10px 12px;
+      border-radius: 4px;
+      padding: 40px;
+      max-width: 420px;
       width: 100%;
     }
-    button {
-      background: linear-gradient(180deg, var(--green-soft), var(--green));
-      cursor: pointer;
-      font-weight: 600;
+    .auth-logo {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
+      text-align: center;
     }
-    button.secondary { background: #1e2935; }
-    button.danger { background: linear-gradient(180deg, #ef6f78, #c84652); }
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      margin-bottom: 14px;
-      padding: 10px 14px;
+    .auth-subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    .auth-input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 14px;
+    }
+    .auth-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .auth-btn {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .auth-btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .auth-btn-primary:hover {
+      background: var(--primary-hover);
+    }
+    .auth-btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .auth-btn-secondary:hover {
+      background: var(--hover);
+    }
+    .auth-status {
+      text-align: center;
+      font-size: 13px;
+      margin: 10px 0;
+      min-height: 20px;
+    }
+    .auth-toggle {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .auth-toggle a {
+      color: var(--primary);
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .auth-toggle a:hover {
+      text-decoration: underline;
+    }
+
+    /* USERNAME SELECTION */
+    .username-setup {
+      text-align: center;
+    }
+    .username-setup h2 {
+      margin-bottom: 10px;
+      font-size: 24px;
+    }
+    .username-setup p {
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    /* MAIN APP LAYOUT */
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      position: fixed;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 16px 8px;
+    }
+    .sidebar::-webkit-scrollbar {
+      width: 8px;
+    }
+    .sidebar::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+    .sidebar-logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      padding: 8px 12px;
+      margin-bottom: 20px;
+    }
+    .sidebar-section {
+      margin-bottom: 20px;
+    }
+    .sidebar-title {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 8px 12px;
+      letter-spacing: 0.5px;
+    }
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      margin: 2px 0;
+      border-radius: 4px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+    }
+    .sidebar-item:hover {
+      background: var(--hover);
+      color: var(--text);
+    }
+    .sidebar-item.active {
+      background: var(--hover);
+      color: var(--text);
+      border-left: 3px solid var(--primary);
+    }
+    .sidebar-icon {
+      margin-right: 12px;
+      font-size: 20px;
+    }
+    .sidebar-search {
+      width: 100%;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      margin-left: 260px;
+      flex: 1;
+      max-width: 1200px;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
-    .top-actions { display: flex; gap: 8px; align-items: center; }
-    .pill {
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 0.8rem;
-      color: var(--muted);
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
-    .layout {
-      display: grid;
-      grid-template-columns: 250px 1fr 300px;
-      gap: 14px;
+    .header-community {
+      font-size: 18px;
+      font-weight: 600;
     }
-    .side, .right { padding: 12px; height: fit-content; }
-    .side h3, .right h3 { font-size: 0.95rem; margin-bottom: 10px; }
-    .community-btn {
-      width: 100%;
-      text-align: left;
-      margin-bottom: 8px;
-      background: #17212b;
-      border: 1px solid var(--border);
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
-    .community-btn.active {
-      border-color: #59c980;
-      box-shadow: 0 0 0 2px rgba(89, 201, 128, 0.12);
+    .header-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: var(--hover);
+      border-radius: 4px;
+      font-size: 14px;
     }
-    .feed-top { padding: 12px; margin-bottom: 10px; }
-    .post {
-      display: grid;
-      grid-template-columns: 52px 1fr;
-      gap: 10px;
-      padding: 12px;
-      margin-bottom: 10px;
+    .mod-badge {
+      background: var(--green);
+      color: white;
+      padding: 2px 8px;
       border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .btn-logout {
+      padding: 6px 16px;
+      background: transparent;
       border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .btn-logout:hover {
+      background: var(--hover);
+    }
+
+    /* POST CREATION */
+    .create-post {
       background: var(--panel);
-    }
-    .vote-box {
-      background: #101820;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 6px;
-      text-align: center;
+      border-radius: 4px;
+      padding: 16px;
+      margin: 16px 20px;
     }
-    .meta { font-size: 0.8rem; color: var(--muted); }
-    .title { margin: 4px 0 8px; font-size: 1rem; }
-    .content { color: #d4dde7; white-space: pre-wrap; line-height: 1.38; }
-    .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-    .reply { margin-top: 8px; margin-left: 12px; padding: 8px; border-left: 2px solid #355168; background: #10171e; border-radius: 8px; }
-    .moderator-dashboard { margin-top: 14px; padding: 12px; }
-    .notice { color: var(--muted); font-size: 0.9rem; }
-    @media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } }
+    .create-post-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .create-post-avatar {
+      width: 38px;
+      height: 38px;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: white;
+    }
+    .create-post-input {
+      flex: 1;
+      padding: 10px 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 14px;
+    }
+    .create-post-body {
+      display: none;
+      margin-top: 12px;
+    }
+    .create-post-body.active {
+      display: block;
+    }
+    .create-post-select {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .create-post-textarea {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 14px;
+      resize: vertical;
+      min-height: 120px;
+      margin-bottom: 12px;
+    }
+    .create-post-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .btn-post {
+      padding: 8px 24px;
+      background: var(--primary);
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-post:hover {
+      background: var(--primary-hover);
+    }
+    .btn-cancel {
+      padding: 8px 24px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .btn-cancel:hover {
+      background: var(--hover);
+    }
+
+    /* POSTS FEED */
+    .posts-feed {
+      padding: 0 20px 20px;
+    }
+    .post-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-bottom: 10px;
+      display: flex;
+      transition: border-color 0.2s;
+    }
+    .post-card:hover {
+      border-color: var(--text-muted);
+    }
+    .post-vote {
+      width: 40px;
+      background: var(--bg);
+      padding: 8px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      border-radius: 4px 0 0 4px;
+    }
+    .vote-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 20px;
+      color: var(--text-muted);
+      padding: 4px;
+      line-height: 1;
+    }
+    .vote-btn:hover {
+      color: var(--text);
+    }
+    .vote-btn.upvoted {
+      color: var(--upvote);
+    }
+    .vote-btn.downvoted {
+      color: var(--downvote);
+    }
+    .vote-count {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .post-content {
+      flex: 1;
+      padding: 12px;
+    }
+    .post-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .post-meta a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .post-meta a:hover {
+      text-decoration: underline;
+    }
+    .post-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .post-body {
+      font-size: 14px;
+      color: var(--text-muted);
+      white-space: pre-wrap;
+      margin-bottom: 8px;
+    }
+    .post-actions {
+      display: flex;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .post-action-btn {
+      background: transparent;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 2px;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .post-action-btn:hover {
+      background: var(--hover);
+      color: var(--text);
+    }
+    .post-action-btn.danger {
+      color: var(--danger);
+    }
+
+    /* REPLIES */
+    .replies-container {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .reply-box {
+      margin-bottom: 12px;
+    }
+    .reply-input {
+      width: 100%;
+      padding: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text);
+      font-size: 13px;
+      resize: vertical;
+      min-height: 80px;
+      margin-bottom: 8px;
+    }
+    .reply-item {
+      padding: 8px 0;
+      border-left: 2px solid var(--border);
+      padding-left: 12px;
+      margin-bottom: 8px;
+    }
+    .reply-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .reply-text {
+      font-size: 14px;
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+
+    /* MODERATOR PANEL */
+    .mod-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 16px;
+      margin: 16px 20px;
+    }
+    .mod-panel-header {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mod-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+    .mod-item-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .mod-item-content {
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .mod-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-mod {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-mod-warn {
+      background: #ffa500;
+      color: white;
+    }
+    .btn-mod-delete {
+      background: var(--danger);
+      color: white;
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        left: -260px;
+        transition: left 0.3s;
+        z-index: 100;
+      }
+      .sidebar.mobile-open {
+        left: 0;
+      }
+      .main-content {
+        margin-left: 0;
+      }
+    }
   </style>
 </head>
 <body>
-  <div id="authView" class="card auth-wrap">
-    <div class="logo">Khat</div>
-    <p class="tag">KIIT campus boards</p>
-    <div class="stack">
-      <input id="email" type="email" placeholder="you@kiit.ac.in">
-      <input id="password" type="password" placeholder="Password">
-      <input id="username" maxlength="24" placeholder="Choose username (signup only)">
-      <p id="authStatus" class="notice"></p>
-      <div class="row">
-        <button onclick="signUp()">Sign Up</button>
-        <button class="secondary" onclick="login()">Log In</button>
+  <!-- AUTH VIEW -->
+  <div id="authView" class="auth-container">
+    <div class="auth-box">
+      <div class="auth-logo">Khat</div>
+      <p class="auth-subtitle">KIIT Community Forum</p>
+      
+      <!-- Login Form -->
+      <div id="loginForm">
+        <input id="loginEmail" class="auth-input" type="email" placeholder="you@kiit.ac.in">
+        <input id="loginPassword" class="auth-input" type="password" placeholder="Password">
+        <div id="authStatus" class="auth-status"></div>
+        <button class="auth-btn auth-btn-primary" onclick="login()">Log In</button>
+        <button class="auth-btn auth-btn-secondary" onclick="loginWithGoogle()">Continue with Google</button>
+        <div class="auth-toggle">
+          Don't have an account? <a onclick="toggleAuthMode()">Sign up</a>
+        </div>
       </div>
-      <button class="secondary" onclick="loginWithGoogle()">Continue with Google</button>
-      <p class="notice">Only @kiit.ac.in accounts are allowed.</p>
+
+      <!-- Signup Form -->
+      <div id="signupForm" class="hidden">
+        <input id="signupEmail" class="auth-input" type="email" placeholder="you@kiit.ac.in">
+        <input id="signupPassword" class="auth-input" type="password" placeholder="Password (min 6 characters)">
+        <div id="signupStatus" class="auth-status"></div>
+        <button class="auth-btn auth-btn-primary" onclick="signUp()">Sign Up</button>
+        <button class="auth-btn auth-btn-secondary" onclick="loginWithGoogle()">Continue with Google</button>
+        <div class="auth-toggle">
+          Already have an account? <a onclick="toggleAuthMode()">Log in</a>
+        </div>
+      </div>
+
+      <!-- Username Setup (shown after first Google login or signup) -->
+      <div id="usernameForm" class="hidden username-setup">
+        <h2>Choose Your Username</h2>
+        <p>This will be permanent and visible to everyone</p>
+        <input id="usernameInput" class="auth-input" type="text" placeholder="username" maxlength="24">
+        <div id="usernameStatus" class="auth-status"></div>
+        <button class="auth-btn auth-btn-primary" onclick="saveUsername()">Continue</button>
+      </div>
     </div>
   </div>
 
-  <div id="appView" class="shell hidden">
-    <header class="card topbar">
-      <div>
-        <div class="logo">Khat</div>
-        <div class="meta">college boards inspired by imageboards + forums</div>
-      </div>
-      <div class="top-actions">
-        <span class="pill" id="userPill"></span>
-        <span class="pill" id="modPill">member</span>
-        <button class="secondary" onclick="logout()">Logout</button>
-      </div>
-    </header>
+  <!-- MAIN APP VIEW -->
+  <div id="appView" class="hidden">
+    <div class="app-container">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">Khat</div>
+        
+        <div class="sidebar-section">
+          <div class="sidebar-title">Feed</div>
+          <button class="sidebar-item active" onclick="setCommunity('all')" id="feedAll">
+            <span class="sidebar-icon">🏠</span>
+            <span>All Posts</span>
+          </button>
+        </div>
 
-    <main class="layout">
-      <aside class="card side">
-        <h3>Communities</h3>
-        <input id="communitySearch" placeholder="Search communities" oninput="renderCommunities()">
-        <div style="margin-top: 10px;" id="communityList"></div>
+        <div class="sidebar-section">
+          <div class="sidebar-title">Communities</div>
+          <input class="sidebar-search" id="communitySearch" placeholder="Search communities" oninput="renderCommunities()">
+          <div id="communityList"></div>
+        </div>
+
+        <!-- Moderator Section -->
+        <div id="modSidebarSection" class="sidebar-section hidden">
+          <div class="sidebar-title">Moderation</div>
+          <button class="sidebar-item" onclick="showModPanel()" id="modPanelBtn">
+            <span class="sidebar-icon">🛡️</span>
+            <span>Mod Dashboard</span>
+          </button>
+        </div>
       </aside>
 
-      <section>
-        <div class="card feed-top">
-          <div class="row">
-            <select id="communitySelect" style="max-width: 220px;"></select>
-            <input id="postTitle" placeholder="Post title">
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+          <div class="header-left">
+            <div class="header-community" id="currentCommunityName">All Posts</div>
           </div>
-          <div style="margin-top: 10px;">
-            <textarea id="postContent" rows="3" maxlength="700" placeholder="Write your post..."></textarea>
+          <div class="header-right">
+            <div class="header-user">
+              <span id="usernameDisplay"></span>
+              <span id="modBadge" class="mod-badge hidden">MOD</span>
+            </div>
+            <button class="btn-logout" onclick="logout()">Logout</button>
           </div>
-          <div class="row" style="margin-top: 10px;">
-            <button style="max-width: 170px;" onclick="createPost()">Create Post</button>
+        </header>
+
+        <!-- Create Post -->
+        <div class="create-post" id="createPostCard">
+          <div class="create-post-header">
+            <div class="create-post-avatar" id="userAvatar">K</div>
+            <input class="create-post-input" placeholder="Create Post" onclick="expandCreatePost()" readonly>
+          </div>
+          <div class="create-post-body" id="createPostBody">
+            <select class="create-post-select" id="communitySelect">
+              <option value="">Select a community</option>
+            </select>
+            <input class="auth-input" id="postTitle" placeholder="Title" style="margin-bottom: 12px;">
+            <textarea class="create-post-textarea" id="postContent" placeholder="Text (optional)"></textarea>
+            <div class="create-post-actions">
+              <button class="btn-cancel" onclick="collapseCreatePost()">Cancel</button>
+              <button class="btn-post" onclick="createPost()">Post</button>
+            </div>
           </div>
         </div>
-        <div id="feed"></div>
-      </section>
 
-      <aside class="card right">
-        <h3>About</h3>
-        <p class="notice">Local KIIT forum with persistent usernames, voting, replies, and moderation.</p>
-        <div id="moderatorDashboard" class="moderator-dashboard hidden">
-          <h3 style="margin-bottom:8px;">Moderator Dashboard</h3>
+        <!-- Moderator Panel -->
+        <div id="modPanel" class="mod-panel hidden">
+          <div class="mod-panel-header">
+            <span>🛡️</span>
+            <span>Moderator Dashboard</span>
+          </div>
           <div id="modFeed"></div>
         </div>
-      </aside>
-    </main>
+
+        <!-- Posts Feed -->
+        <div class="posts-feed" id="postsFeed"></div>
+      </main>
+    </div>
   </div>
 
   <script>
@@ -187,8 +724,18 @@
         "sb_publishable_J-EXRUHIOncT4Q15Ha5ohQ_JPvOMDBR"
       );
 
-      const COMMUNITIES = ["k/general", "k/tech", "k/chess", "k/sports", "k/music", "k/study", "k/placements", "k/memes"];
-      const FALLBACK_BAD_WORDS = ["fuck","shit","bitch","madarchod","bhenchod","chutiya","হারামি","ମାଗି","ହରାମି"];
+      const COMMUNITIES = [
+        { id: "k/general", name: "General", icon: "💬" },
+        { id: "k/tech", name: "Tech", icon: "💻" },
+        { id: "k/chess", name: "Chess", icon: "♟️" },
+        { id: "k/sports", name: "Sports", icon: "⚽" },
+        { id: "k/music", name: "Music", icon: "🎵" },
+        { id: "k/study", name: "Study", icon: "📚" },
+        { id: "k/placements", name: "Placements", icon: "💼" },
+        { id: "k/memes", name: "Memes", icon: "😂" }
+      ];
+
+      const FALLBACK_BAD_WORDS = ["fuck","shit","bitch","madarchod","bhenchod","chutiya"];
 
       let user = null;
       let profile = null;
@@ -200,12 +747,19 @@
       let hiddenReplies = new Set();
       let profanityWords = [...FALLBACK_BAD_WORDS];
       let isModerator = false;
-      const authStatusEl = document.getElementById("authStatus");
+      let showingModPanel = false;
 
-      function setAuthStatus(message, isError) {
-        if (!authStatusEl) return;
-        authStatusEl.textContent = message || "";
-        authStatusEl.style.color = isError ? "#ff9aa2" : "var(--muted)";
+      // AUTH FUNCTIONS
+      function setAuthStatus(message, isError, targetId = "authStatus") {
+        const el = document.getElementById(targetId);
+        if (!el) return;
+        el.textContent = message || "";
+        el.style.color = isError ? "#ea0027" : "#818384";
+      }
+
+      function toggleAuthMode() {
+        document.getElementById("loginForm").classList.toggle("hidden");
+        document.getElementById("signupForm").classList.toggle("hidden");
       }
 
       function showAuth() {
@@ -218,57 +772,77 @@
         document.getElementById("appView").classList.remove("hidden");
       }
 
+      function showUsernameSetup() {
+        document.getElementById("loginForm").classList.add("hidden");
+        document.getElementById("signupForm").classList.add("hidden");
+        document.getElementById("usernameForm").classList.remove("hidden");
+      }
+
       function kiitEmail(email) {
         return String(email || "").toLowerCase().endsWith("@kiit.ac.in");
       }
 
       async function signUp() {
         try {
-          setAuthStatus("Creating account...");
-          const email = document.getElementById("email").value.trim().toLowerCase();
-          const password = document.getElementById("password").value;
-          const username = document.getElementById("username").value.trim().toLowerCase();
-          if (!kiitEmail(email)) return setAuthStatus("Use a valid @kiit.ac.in email.", true);
-          if (password.length < 6) return setAuthStatus("Password must be at least 6 characters.", true);
-          if (username.length < 3) return setAuthStatus("Username must be at least 3 characters.", true);
+          setAuthStatus("Creating account...", false, "signupStatus");
+          const email = document.getElementById("signupEmail").value.trim().toLowerCase();
+          const password = document.getElementById("signupPassword").value;
 
-          const { data: uTaken } = await supabaseClient.from("profiles").select("id").eq("username", username).maybeSingle();
-          if (uTaken) return setAuthStatus("Username already taken.", true);
+          if (!kiitEmail(email)) {
+            return setAuthStatus("Please use a @kiit.ac.in email address", true, "signupStatus");
+          }
+          if (password.length < 6) {
+            return setAuthStatus("Password must be at least 6 characters", true, "signupStatus");
+          }
 
           const { data, error } = await supabaseClient.auth.signUp({
-            email, password, options: { data: { username } }
+            email,
+            password
           });
-          if (error) return setAuthStatus(error.message, true);
-          if (!data.user) return setAuthStatus("Check your email for verification, then login.", false);
 
-          await ensureProfile(data.user, username);
-          setAuthStatus("");
-          await bootstrap();
+          if (error) return setAuthStatus(error.message, true, "signupStatus");
+          
+          if (data.user) {
+            setAuthStatus("Account created! Please check your email to verify.", false, "signupStatus");
+            setTimeout(() => {
+              document.getElementById("signupForm").classList.add("hidden");
+              document.getElementById("loginForm").classList.remove("hidden");
+            }, 2000);
+          }
         } catch (err) {
           console.error(err);
-          setAuthStatus("Signup failed. Check configuration and try again.", true);
+          setAuthStatus("Signup failed. Please try again.", true, "signupStatus");
         }
       }
 
       async function login() {
         try {
-          setAuthStatus("Logging in...");
-          const email = document.getElementById("email").value.trim().toLowerCase();
-          const password = document.getElementById("password").value;
-          if (!kiitEmail(email)) return setAuthStatus("Only @kiit.ac.in users can login.", true);
-          const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-          if (error) return setAuthStatus(error.message, true);
+          setAuthStatus("Logging in...", false, "authStatus");
+          const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+          const password = document.getElementById("loginPassword").value;
+
+          if (!kiitEmail(email)) {
+            return setAuthStatus("Only @kiit.ac.in users can login", true, "authStatus");
+          }
+
+          const { data, error } = await supabaseClient.auth.signInWithPassword({ 
+            email, 
+            password 
+          });
+
+          if (error) return setAuthStatus(error.message, true, "authStatus");
+          
           setAuthStatus("");
           await bootstrap();
         } catch (err) {
           console.error(err);
-          setAuthStatus("Login failed. Please retry.", true);
+          setAuthStatus("Login failed. Please try again.", true, "authStatus");
         }
       }
 
       async function loginWithGoogle() {
         try {
-          setAuthStatus("Redirecting to Google...");
+          setAuthStatus("Redirecting to Google...", false, "authStatus");
           const { error } = await supabaseClient.auth.signInWithOAuth({
             provider: "google",
             options: {
@@ -279,46 +853,105 @@
               }
             }
           });
-          if (error) setAuthStatus(error.message, true);
+          if (error) setAuthStatus(error.message, true, "authStatus");
         } catch (err) {
           console.error(err);
-          setAuthStatus("Google login setup is incomplete. Check provider configuration.", true);
+          setAuthStatus("Google login failed. Please try again.", true, "authStatus");
         }
       }
 
       async function logout() {
         await supabaseClient.auth.signOut();
+        user = null;
+        profile = null;
         showAuth();
       }
 
-      async function ensureProfile(sUser, forcedUsername) {
-        const { data: existing } = await supabaseClient.from("profiles").select("id").eq("id", sUser.id).maybeSingle();
-        if (existing) return;
-        const fromMeta = sUser.user_metadata && sUser.user_metadata.username;
-        const fallback = (sUser.email || "kiit_user").split("@")[0];
-        const username = String(forcedUsername || fromMeta || fallback).toLowerCase().replace(/[^a-z0-9_]/g, "_").slice(0, 24);
-        await supabaseClient.from("profiles").insert([{ id: sUser.id, email: sUser.email, username }]);
+      async function saveUsername() {
+        try {
+          const username = document.getElementById("usernameInput").value.trim().toLowerCase();
+          
+          if (username.length < 3) {
+            return setAuthStatus("Username must be at least 3 characters", true, "usernameStatus");
+          }
+          if (!/^[a-z0-9_]+$/.test(username)) {
+            return setAuthStatus("Username can only contain letters, numbers, and underscores", true, "usernameStatus");
+          }
+
+          // Check if username is taken
+          const { data: existing } = await supabaseClient
+            .from("profiles")
+            .select("id")
+            .eq("username", username)
+            .maybeSingle();
+
+          if (existing) {
+            return setAuthStatus("Username already taken", true, "usernameStatus");
+          }
+
+          // Create profile
+          const { error } = await supabaseClient
+            .from("profiles")
+            .insert([{
+              id: user.id,
+              email: user.email,
+              username: username
+            }]);
+
+          if (error) {
+            return setAuthStatus(error.message, true, "usernameStatus");
+          }
+
+          await bootstrap();
+        } catch (err) {
+          console.error(err);
+          setAuthStatus("Failed to save username. Please try again.", true, "usernameStatus");
+        }
       }
 
       async function bootstrap() {
         const { data } = await supabaseClient.auth.getUser();
         if (!data.user) return showAuth();
+
         if (!kiitEmail(data.user.email)) {
           await supabaseClient.auth.signOut();
-          return alert("Only @kiit.ac.in users are allowed.");
+          alert("Only @kiit.ac.in users are allowed.");
+          return showAuth();
         }
 
         user = data.user;
-        await ensureProfile(user);
-        const { data: p } = await supabaseClient.from("profiles").select("*").eq("id", user.id).maybeSingle();
-        profile = p;
-        if (!profile) return alert("Could not load profile.");
 
-        const { data: mod } = await supabaseClient.from("moderators").select("id").eq("user_id", user.id).maybeSingle();
+        // Check if profile exists
+        const { data: p } = await supabaseClient
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .maybeSingle();
+
+        if (!p) {
+          // Show username setup
+          showUsernameSetup();
+          return;
+        }
+
+        profile = p;
+
+        // Check moderator status
+        const { data: mod } = await supabaseClient
+          .from("moderators")
+          .select("id")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
         isModerator = !!mod;
-        document.getElementById("modPill").textContent = isModerator ? "moderator" : "member";
-        document.getElementById("userPill").textContent = "@" + profile.username;
-        document.getElementById("moderatorDashboard").classList.toggle("hidden", !isModerator);
+
+        // Update UI
+        document.getElementById("usernameDisplay").textContent = `u/${profile.username}`;
+        document.getElementById("modBadge").classList.toggle("hidden", !isModerator);
+        document.getElementById("modSidebarSection").classList.toggle("hidden", !isModerator);
+        
+        const avatar = document.getElementById("userAvatar");
+        avatar.textContent = profile.username.charAt(0).toUpperCase();
 
         await loadProfanity();
         renderCommunities();
@@ -328,8 +961,13 @@
       }
 
       async function loadProfanity() {
-        const { data } = await supabaseClient.from("profanity_terms").select("term").eq("is_active", true);
-        if (data && data.length) profanityWords = data.map(x => String(x.term || "").toLowerCase());
+        const { data } = await supabaseClient
+          .from("profanity_terms")
+          .select("term")
+          .eq("is_active", true);
+        if (data && data.length) {
+          profanityWords = data.map(x => String(x.term || "").toLowerCase());
+        }
       }
 
       function hasBadWords(text) {
@@ -338,24 +976,121 @@
       }
 
       function fillCommunitySelect() {
-        const s = document.getElementById("communitySelect");
-        s.innerHTML = `<option value="">Select community</option>` + COMMUNITIES.map(c => `<option value="${c}">${c}</option>`).join("");
+        const select = document.getElementById("communitySelect");
+        select.innerHTML = `<option value="">Select a community</option>` +
+          COMMUNITIES.map(c => `<option value="${c.id}">${c.icon} ${c.name}</option>`).join("");
       }
 
       function renderCommunities() {
-        const q = document.getElementById("communitySearch").value.trim().toLowerCase();
-        const list = !q ? COMMUNITIES : COMMUNITIES.filter(c => c.includes(q));
-        const root = document.getElementById("communityList");
-        root.innerHTML = `<button class="community-btn ${currentCommunity === "all" ? "active" : ""}" onclick="setCommunity('all')">All</button>` +
-          list.map(c => `<button class="community-btn ${currentCommunity === c ? "active" : ""}" onclick="setCommunity('${c}')">${c}</button>`).join("");
+        const query = document.getElementById("communitySearch").value.trim().toLowerCase();
+        const filtered = !query ? COMMUNITIES : COMMUNITIES.filter(c => 
+          c.name.toLowerCase().includes(query) || c.id.includes(query)
+        );
+
+        const list = document.getElementById("communityList");
+        list.innerHTML = filtered.map(c => `
+          <button class="sidebar-item ${currentCommunity === c.id ? 'active' : ''}" 
+                  onclick="setCommunity('${c.id}')">
+            <span class="sidebar-icon">${c.icon}</span>
+            <span>${c.name}</span>
+          </button>
+        `).join("");
+      }
+
+      function setCommunity(communityId) {
+        currentCommunity = communityId;
+        showingModPanel = false;
+        
+        // Update sidebar
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+          item.classList.remove('active');
+        });
+        
+        if (communityId === 'all') {
+          document.getElementById('feedAll').classList.add('active');
+          document.getElementById('currentCommunityName').textContent = 'All Posts';
+        } else {
+          const comm = COMMUNITIES.find(c => c.id === communityId);
+          document.getElementById('currentCommunityName').textContent = comm ? `${comm.icon} ${comm.name}` : communityId;
+        }
+        
+        document.getElementById('modPanel').classList.add('hidden');
+        document.getElementById('createPostCard').classList.remove('hidden');
+        renderCommunities();
+        renderFeed();
+      }
+
+      function showModPanel() {
+        showingModPanel = true;
+        currentCommunity = null;
+        
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+          item.classList.remove('active');
+        });
+        document.getElementById('modPanelBtn').classList.add('active');
+        
+        document.getElementById('currentCommunityName').textContent = '🛡️ Moderator Dashboard';
+        document.getElementById('modPanel').classList.remove('hidden');
+        document.getElementById('createPostCard').classList.add('hidden');
+        document.getElementById('postsFeed').innerHTML = '';
+        
+        renderModFeed();
+      }
+
+      function expandCreatePost() {
+        document.getElementById('createPostBody').classList.add('active');
+      }
+
+      function collapseCreatePost() {
+        document.getElementById('createPostBody').classList.remove('active');
+        document.getElementById('postTitle').value = '';
+        document.getElementById('postContent').value = '';
+        document.getElementById('communitySelect').value = '';
+      }
+
+      async function createPost() {
+        const title = document.getElementById("postTitle").value.trim();
+        const content = document.getElementById("postContent").value.trim();
+        const community = document.getElementById("communitySelect").value;
+
+        if (!title) return alert("Please add a title");
+        if (!community) return alert("Please select a community");
+        if (hasBadWords(title + " " + content)) {
+          return alert("Please keep language respectful");
+        }
+
+        const { error } = await supabaseClient.from("posts").insert([{
+          title,
+          content,
+          community,
+          user_id: user.id,
+          user_email: user.email,
+          username: profile.username,
+          anonymous_id: user.id,
+          anonymous_name: profile.username,
+          created_at: new Date().toISOString()
+        }]);
+
+        if (error) return alert(error.message);
+
+        collapseCreatePost();
+        await refreshFeed();
       }
 
       async function refreshFeed() {
-        const { data: postData } = await supabaseClient.from("posts").select("*").order("created_at", { ascending: false }).limit(100);
+        const { data: postData } = await supabaseClient
+          .from("posts")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(100);
+
         posts = postData || [];
         await hydrateState();
-        renderFeed();
-        if (isModerator) renderModFeed();
+        if (!showingModPanel) {
+          renderFeed();
+        } else {
+          renderModFeed();
+        }
       }
 
       async function hydrateState() {
@@ -363,6 +1098,7 @@
         votesByPost = {};
         hiddenPosts = new Set();
         hiddenReplies = new Set();
+
         const ids = posts.map(p => p.id);
         if (!ids.length) return;
 
@@ -377,7 +1113,11 @@
           if (v.vote_value === 1) votesByPost[v.post_id].up += 1;
           if (v.vote_value === -1) votesByPost[v.post_id].down += 1;
         });
-        (myVotes || []).forEach(v => { userVotes[v.post_id] = v.vote_value; });
+
+        (myVotes || []).forEach(v => {
+          userVotes[v.post_id] = v.vote_value;
+        });
+
         (mods || []).forEach(m => {
           if (m.target_type === "post") hiddenPosts.add(Number(m.target_id));
           if (m.target_type === "reply") hiddenReplies.add(Number(m.target_id));
@@ -391,113 +1131,167 @@
       }
 
       function renderFeed() {
-        const root = document.getElementById("feed");
+        const feed = document.getElementById("postsFeed");
+        
         const visible = posts
           .filter(p => !hiddenPosts.has(p.id))
           .filter(p => currentCommunity === "all" || p.community === currentCommunity)
           .sort((a, b) => score(b) - score(a));
 
         if (!visible.length) {
-          root.innerHTML = `<div class="card" style="padding:12px;">No posts yet.</div>`;
+          feed.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">📭</div>
+              <div>No posts yet. Be the first to post!</div>
+            </div>
+          `;
           return;
         }
 
-        root.innerHTML = visible.map(p => {
+        feed.innerHTML = visible.map(p => {
           const v = votesByPost[p.id] || { up: 0, down: 0 };
           const my = userVotes[p.id] || 0;
-          const title = p.title || p.content?.slice(0, 70) || "Untitled";
+          const comm = COMMUNITIES.find(c => c.id === p.community);
+
           return `
-            <article class="post">
-              <div class="vote-box">
-                <button onclick="votePost(${p.id},1)">${my === 1 ? "✓ " : ""}▲</button>
-                <div style="padding:6px 0;font-weight:700;">${v.up - v.down}</div>
-                <button class="secondary" onclick="votePost(${p.id},-1)">${my === -1 ? "✓ " : ""}▼</button>
+            <article class="post-card">
+              <div class="post-vote">
+                <button class="vote-btn ${my === 1 ? 'upvoted' : ''}" onclick="votePost(${p.id}, 1)">▲</button>
+                <div class="vote-count">${v.up - v.down}</div>
+                <button class="vote-btn ${my === -1 ? 'downvoted' : ''}" onclick="votePost(${p.id}, -1)">▼</button>
               </div>
-              <div>
-                <div class="meta">${escapeHtml(p.community || "k/general")} • posted ${timeAgo(p.created_at)} by @${escapeHtml(p.username || "kiit_user")}</div>
-                <h4 class="title">${escapeHtml(title)}</h4>
-                <div class="content">${escapeHtml(p.content || "")}</div>
-                <div class="actions">
-                  <button class="secondary" onclick="toggleReplyBox(${p.id})">Reply</button>
-                  ${isModerator ? `<button class="danger" onclick="deletePost(${p.id})">Delete Post</button><button class="secondary" onclick="warnUser(${p.id})">Warn User</button>` : ""}
+              <div class="post-content">
+                <div class="post-meta">
+                  <a onclick="setCommunity('${p.community}')">${comm ? comm.icon + ' ' + comm.name : p.community}</a>
+                  • Posted by u/${escapeHtml(p.username || 'unknown')} 
+                  • ${timeAgo(p.created_at)}
                 </div>
-                <div id="replybox-${p.id}" class="hidden" style="margin-top:8px;">
-                  <textarea id="replytext-${p.id}" rows="2" placeholder="Write reply"></textarea>
-                  <button style="margin-top:6px;max-width:140px;" onclick="sendReply(${p.id})">Post Reply</button>
+                <h3 class="post-title">${escapeHtml(p.title || '')}</h3>
+                ${p.content ? `<div class="post-body">${escapeHtml(p.content)}</div>` : ''}
+                <div class="post-actions">
+                  <button class="post-action-btn" onclick="toggleReplies(${p.id})">
+                    💬 Reply
+                  </button>
+                  ${isModerator ? `
+                    <button class="post-action-btn" onclick="warnUser(${p.id})">⚠️ Warn</button>
+                    <button class="post-action-btn danger" onclick="deletePost(${p.id})">🗑️ Delete</button>
+                  ` : ''}
                 </div>
-                <div id="replies-${p.id}" style="margin-top:8px;"></div>
+                <div id="replies-${p.id}" class="hidden"></div>
               </div>
             </article>
           `;
         }).join("");
-
-        visible.forEach(p => loadReplies(p.id));
-      }
-
-      async function createPost() {
-        const title = document.getElementById("postTitle").value.trim();
-        const content = document.getElementById("postContent").value.trim();
-        const community = document.getElementById("communitySelect").value;
-        if (!community || !content) return alert("Select community and add post content.");
-        if (hasBadWords(title + " " + content)) return alert("Please keep language respectful.");
-
-        const { error } = await supabaseClient.from("posts").insert([{
-          title, content, community, user_id: user.id, user_email: user.email, username: profile.username,
-          anonymous_id: user.id, anonymous_name: profile.username, created_at: new Date().toISOString()
-        }]);
-        if (error) return alert(error.message);
-        document.getElementById("postTitle").value = "";
-        document.getElementById("postContent").value = "";
-        await refreshFeed();
       }
 
       async function votePost(postId, val) {
         const current = userVotes[postId] || 0;
+        
         if (current === val) {
-          await supabaseClient.from("post_votes").delete().eq("post_id", postId).eq("user_id", user.id);
+          // Remove vote
+          await supabaseClient
+            .from("post_votes")
+            .delete()
+            .eq("post_id", postId)
+            .eq("user_id", user.id);
         } else {
-          await supabaseClient.from("post_votes").upsert([{
-            post_id: postId, user_id: user.id, vote_value: val, created_at: new Date().toISOString()
-          }], { onConflict: "post_id,user_id" });
+          // Add or update vote
+          await supabaseClient
+            .from("post_votes")
+            .upsert([{
+              post_id: postId,
+              user_id: user.id,
+              vote_value: val,
+              created_at: new Date().toISOString()
+            }], { onConflict: "post_id,user_id" });
         }
+
         await refreshFeed();
       }
 
-      function toggleReplyBox(postId) {
-        document.getElementById(`replybox-${postId}`).classList.toggle("hidden");
+      async function toggleReplies(postId) {
+        const container = document.getElementById(`replies-${postId}`);
+        
+        if (container.classList.contains('hidden')) {
+          container.classList.remove('hidden');
+          await loadReplies(postId);
+        } else {
+          container.classList.add('hidden');
+        }
+      }
+
+      async function loadReplies(postId) {
+        const { data } = await supabaseClient
+          .from("replies")
+          .select("*")
+          .eq("post_id", postId)
+          .order("created_at", { ascending: true });
+
+        const container = document.getElementById(`replies-${postId}`);
+        const replies = (data || []).filter(r => !hiddenReplies.has(r.id));
+
+        container.innerHTML = `
+          <div class="replies-container">
+            <div class="reply-box">
+              <textarea class="reply-input" id="replytext-${postId}" placeholder="What are your thoughts?"></textarea>
+              <button class="btn-post" style="max-width: 120px;" onclick="sendReply(${postId})">Reply</button>
+            </div>
+            ${replies.map(r => `
+              <div class="reply-item">
+                <div class="reply-meta">
+                  u/${escapeHtml(r.username || 'unknown')} • ${timeAgo(r.created_at)}
+                </div>
+                <div class="reply-text">${escapeHtml(r.content || '')}</div>
+                ${isModerator ? `
+                  <div class="post-actions" style="margin-top: 4px;">
+                    <button class="post-action-btn danger" onclick="deleteReply(${r.id}, ${postId})">Delete</button>
+                  </div>
+                ` : ''}
+              </div>
+            `).join('')}
+          </div>
+        `;
       }
 
       async function sendReply(postId) {
         const input = document.getElementById(`replytext-${postId}`);
         const content = input.value.trim();
+
         if (!content) return;
-        if (hasBadWords(content)) return alert("Please keep language respectful.");
+        if (hasBadWords(content)) {
+          return alert("Please keep language respectful");
+        }
 
         const { error } = await supabaseClient.from("replies").insert([{
-          post_id: postId, content, user_id: user.id, user_email: user.email, username: profile.username,
-          anonymous_id: user.id, anonymous_name: profile.username, created_at: new Date().toISOString()
+          post_id: postId,
+          content,
+          user_id: user.id,
+          user_email: user.email,
+          username: profile.username,
+          anonymous_id: user.id,
+          anonymous_name: profile.username,
+          created_at: new Date().toISOString()
         }]);
+
         if (error) return alert(error.message);
+
         input.value = "";
         await loadReplies(postId);
       }
 
-      async function loadReplies(postId) {
-        const { data } = await supabaseClient.from("replies").select("*").eq("post_id", postId).order("created_at", { ascending: true });
-        const root = document.getElementById(`replies-${postId}`);
-        const rows = (data || []).filter(r => !hiddenReplies.has(r.id));
-        root.innerHTML = rows.map(r => `
-          <div class="reply">
-            <div class="meta">@${escapeHtml(r.username || "kiit_user")} • ${timeAgo(r.created_at)}</div>
-            <div class="content">${escapeHtml(r.content || "")}</div>
-            ${isModerator ? `<div class="actions"><button class="danger" onclick="deleteReply(${r.id},${postId})">Delete Reply</button></div>` : ""}
-          </div>
-        `).join("");
-      }
-
       async function deletePost(postId) {
         if (!isModerator) return;
-        await supabaseClient.from("moderation_actions").insert([{ target_type: "post", target_id: postId, action: "hide", moderator_user_id: user.id }]);
+        if (!confirm('Delete this post?')) return;
+
+        await supabaseClient
+          .from("moderation_actions")
+          .insert([{
+            target_type: "post",
+            target_id: postId,
+            action: "hide",
+            moderator_user_id: user.id
+          }]);
+
         await supabaseClient.from("posts").delete().eq("id", postId);
         await supabaseClient.from("replies").delete().eq("post_id", postId);
         await refreshFeed();
@@ -505,82 +1299,122 @@
 
       async function deleteReply(replyId, postId) {
         if (!isModerator) return;
-        await supabaseClient.from("moderation_actions").insert([{ target_type: "reply", target_id: replyId, action: "hide", moderator_user_id: user.id }]);
+        if (!confirm('Delete this reply?')) return;
+
+        await supabaseClient
+          .from("moderation_actions")
+          .insert([{
+            target_type: "reply",
+            target_id: replyId,
+            action: "hide",
+            moderator_user_id: user.id
+          }]);
+
         await supabaseClient.from("replies").delete().eq("id", replyId);
         await loadReplies(postId);
       }
 
       async function warnUser(postId) {
         if (!isModerator) return;
+        
         const p = posts.find(x => Number(x.id) === Number(postId));
         if (!p) return;
-        const reason = prompt(`Warning reason for ${p.user_email || "student"}:`) || "";
-        if (!reason.trim()) return;
+
+        const reason = prompt(`Warning reason for u/${p.username}:`);
+        if (!reason || !reason.trim()) return;
+
         const { error } = await supabaseClient.from("moderation_warnings").insert([{
-          target_user_id: p.user_id, target_email: p.user_email, post_id: p.id, reason, moderator_user_id: user.id
+          target_user_id: p.user_id,
+          target_email: p.user_email,
+          post_id: p.id,
+          reason,
+          moderator_user_id: user.id
         }]);
-        if (error) alert(error.message); else alert("Warning added.");
+
+        if (error) {
+          alert(error.message);
+        } else {
+          alert("Warning sent to user");
+        }
       }
 
       function renderModFeed() {
-        const root = document.getElementById("modFeed");
-        const sample = posts.slice(0, 12);
-        root.innerHTML = sample.map(p => `
-          <div class="card" style="padding:8px;margin-bottom:8px;">
-            <div class="meta">${escapeHtml(p.user_email || "")}</div>
-            <div style="margin:4px 0;">${escapeHtml((p.title || p.content || "").slice(0, 85))}</div>
-            <div class="row">
-              <button class="secondary" onclick="warnUser(${p.id})">Warn</button>
-              <button class="danger" onclick="deletePost(${p.id})">Delete</button>
+        const feed = document.getElementById("modFeed");
+        const recent = posts.slice(0, 20);
+
+        if (!recent.length) {
+          feed.innerHTML = '<div class="empty-state">No posts to moderate</div>';
+          return;
+        }
+
+        feed.innerHTML = recent.map(p => `
+          <div class="mod-item">
+            <div class="mod-item-meta">
+              u/${escapeHtml(p.username || 'unknown')} (${escapeHtml(p.user_email || '')})
+              • ${p.community} • ${timeAgo(p.created_at)}
+            </div>
+            <div class="mod-item-content">
+              <strong>${escapeHtml(p.title || '')}</strong>
+              ${p.content ? '<br>' + escapeHtml(p.content.slice(0, 150)) + (p.content.length > 150 ? '...' : '') : ''}
+            </div>
+            <div class="mod-actions">
+              <button class="btn-mod btn-mod-warn" onclick="warnUser(${p.id})">⚠️ Warn User</button>
+              <button class="btn-mod btn-mod-delete" onclick="deletePost(${p.id})">🗑️ Delete Post</button>
             </div>
           </div>
-        `).join("");
+        `).join('');
       }
 
-      function setCommunity(c) {
-        currentCommunity = c;
-        renderCommunities();
-        renderFeed();
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text || '';
+        return div.innerHTML;
       }
 
-      function escapeHtml(t) {
-        const d = document.createElement("div");
-        d.textContent = t || "";
-        return d.innerHTML;
+      function timeAgo(timestamp) {
+        const seconds = Math.floor((Date.now() - new Date(timestamp).getTime()) / 1000);
+        
+        if (seconds < 60) return 'just now';
+        if (seconds < 3600) return Math.floor(seconds / 60) + 'm';
+        if (seconds < 86400) return Math.floor(seconds / 3600) + 'h';
+        if (seconds < 2592000) return Math.floor(seconds / 86400) + 'd';
+        if (seconds < 31536000) return Math.floor(seconds / 2592000) + 'mo';
+        return Math.floor(seconds / 31536000) + 'y';
       }
 
-      function timeAgo(ts) {
-        const s = (Date.now() - new Date(ts).getTime()) / 1000;
-        if (s < 60) return "just now";
-        if (s < 3600) return Math.floor(s / 60) + "m ago";
-        if (s < 86400) return Math.floor(s / 3600) + "h ago";
-        return Math.floor(s / 86400) + "d ago";
-      }
-
+      // Global functions
       window.signUp = signUp;
       window.login = login;
       window.loginWithGoogle = loginWithGoogle;
       window.logout = logout;
+      window.saveUsername = saveUsername;
+      window.toggleAuthMode = toggleAuthMode;
       window.setCommunity = setCommunity;
+      window.showModPanel = showModPanel;
+      window.expandCreatePost = expandCreatePost;
+      window.collapseCreatePost = collapseCreatePost;
       window.createPost = createPost;
       window.votePost = votePost;
-      window.toggleReplyBox = toggleReplyBox;
+      window.toggleReplies = toggleReplies;
       window.sendReply = sendReply;
       window.deletePost = deletePost;
       window.deleteReply = deleteReply;
       window.warnUser = warnUser;
       window.renderCommunities = renderCommunities;
 
-      window.addEventListener("error", (event) => {
-        setAuthStatus("Runtime error: " + (event.message || "unknown"), true);
-      });
-      window.addEventListener("unhandledrejection", (event) => {
-        const msg = event && event.reason && event.reason.message ? event.reason.message : "Unhandled promise rejection";
-        setAuthStatus(msg, true);
+      // Auth state listener
+      supabaseClient.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'SIGNED_IN') {
+          await bootstrap();
+        } else if (event === 'SIGNED_OUT') {
+          showAuth();
+        }
       });
 
-      supabaseClient.auth.onAuthStateChange(async () => { await bootstrap(); });
+      // Initialize
       bootstrap();
+
+      // Auto-refresh feed every 30 seconds
       setInterval(refreshFeed, 30000);
     })();
   </script>
