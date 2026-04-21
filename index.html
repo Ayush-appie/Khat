@@ -3,195 +3,586 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Khat</title>
-
+<title>Khat - Anonymous Community Forum</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
-body { font-family: Arial; background:#0F4C21; color:#E8F5E9; margin:0; }
-header { text-align:center; background:#1B5E20; padding:20px; }
-.container { max-width:900px; margin:auto; padding:20px; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #071d11;
+  --panel: #0f2f1f;
+  --panel-soft: #153927;
+  --card: #16462b;
+  --accent: #43a047;
+  --accent-2: #66bb6a;
+  --text: #e8f5e9;
+  --muted: #b7dbbb;
+  --danger: #ef5350;
+}
+body {
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  background: radial-gradient(circle at 30% 0%, #14532d, var(--bg));
+  color: var(--text);
+  min-height: 100vh;
+}
+.container { max-width: 1100px; margin: 0 auto; padding: 16px; }
+.card {
+  background: rgba(15, 47, 31, 0.9);
+  border: 1px solid rgba(102, 187, 106, 0.15);
+  border-radius: 14px;
+  backdrop-filter: blur(5px);
+}
+header.card { padding: 18px; margin-bottom: 14px; }
+h1 { font-size: 1.8rem; color: #b9f6ca; }
+.tagline { color: var(--muted); margin-top: 4px; }
+.pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(102, 187, 106, 0.25);
+  background: rgba(67, 160, 71, 0.12);
+  color: var(--text);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  padding: 5px 10px;
+  margin-right: 8px;
+}
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+  align-items: center;
+}
+input, textarea, select, button {
+  border-radius: 10px;
+  border: 1px solid rgba(102, 187, 106, 0.3);
+  color: var(--text);
+  background: #0e321f;
+  font-size: 0.95rem;
+}
+input, textarea, select { width: 100%; padding: 10px 12px; }
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.18);
+}
+button {
+  padding: 9px 14px;
+  cursor: pointer;
+  background: linear-gradient(180deg, #43a047, #2e7d32);
+  transition: transform .12s ease, opacity .2s ease;
+}
+button:hover { transform: translateY(-1px); opacity: .95; }
+button.secondary { background: #1b5e20; }
+button.danger { background: linear-gradient(180deg, #e53935, #b71c1c); }
 
-input, textarea, select {
-    width:100%;
-    padding:10px;
-    margin-top:10px;
-    background:#0F4C21;
-    border:1px solid #2E7D32;
-    color:white;
+#loginGate {
+  max-width: 440px;
+  margin: 8vh auto 0;
+  padding: 20px;
+}
+.hidden { display: none !important; }
+
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
 }
 
-button {
-    margin-top:10px;
-    padding:10px;
-    background:#2E7D32;
-    border:none;
-    color:white;
-    cursor:pointer;
+.search-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 10px;
+}
+.section { padding: 16px; }
+.section h2 { font-size: 1.05rem; margin-bottom: 12px; color: #c8e6c9; }
+#communityNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#communityNav button.active {
+  border-color: rgba(200, 230, 201, 0.8);
+  box-shadow: 0 0 0 2px rgba(200, 230, 201, 0.15);
 }
 
 .post {
-    background:#1B5E20;
-    padding:15px;
-    margin-top:15px;
-    border-radius:5px;
+  background: rgba(22, 70, 43, 0.9);
+  border: 1px solid rgba(102, 187, 106, 0.15);
+  border-radius: 12px;
+  padding: 13px;
+  margin-bottom: 10px;
+}
+.post-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.meta { font-size: 0.82rem; color: var(--muted); }
+.post p { margin-top: 10px; white-space: pre-wrap; line-height: 1.4; }
+.post-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+  align-items: center;
+}
+.vote-chip {
+  background: rgba(102, 187, 106, 0.14);
+  border: 1px solid rgba(102, 187, 106, 0.25);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.8rem;
+}
+.reply {
+  margin-top: 8px;
+  margin-left: 12px;
+  background: rgba(21, 57, 39, 0.9);
+  border-left: 3px solid rgba(102, 187, 106, 0.35);
+  border-radius: 8px;
+  padding: 10px;
+}
+.notice { color: #c8e6c9; font-size: 0.9rem; margin-top: 8px; }
+@media (max-width: 860px) {
+  .search-row { grid-template-columns: 1fr; }
 }
 </style>
 </head>
-
 <body>
 
-<header>
-<h1>💬 Khat</h1>
-<p>Login required • secure posting</p>
-</header>
-
-<div class="container">
-
-<!-- LOGIN -->
-<div id="auth">
-    <h3>Login / Signup</h3>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-
-    <button onclick="signUp()">Sign Up</button>
-    <button onclick="login()">Login</button>
+<div id="loginGate" class="card">
+  <h1>Welcome to Khat</h1>
+  <p class="tagline">Anonymous community forum with smoother discovery and moderation.</p>
+  <div style="margin-top:14px;">
+    <label for="anonAlias">Anonymous display name</label>
+    <input id="anonAlias" maxlength="20" placeholder="e.g. GhostLeaf" />
+    <p class="notice">You stay anonymous. This alias is only for showing posts/replies.</p>
+    <button onclick="loginAnon()">Enter Forum</button>
+  </div>
 </div>
 
-<!-- APP -->
-<div id="app" style="display:none;">
-    <select id="community">
-        <option value="">Select</option>
-        <option value="k/general">k/general</option>
-        <option value="k/chess">k/chess</option>
-        <option value="k/tech">k/tech</option>
-    </select>
+<div id="app" class="container hidden">
+  <header class="card">
+    <h1>💬 Khat</h1>
+    <p class="tagline">Anonymous community • trending now • moderated space</p>
+    <div class="toolbar">
+      <span class="pill" id="activeUserPill"></span>
+      <span class="pill" id="modPill">Member mode</span>
+      <button class="secondary" onclick="toggleModerator()">Refresh Moderator Access</button>
+    </div>
+  </header>
 
-    <textarea id="content"></textarea>
-    <button onclick="createPost()">Post</button>
+  <div class="main-grid">
+    <section class="card section">
+      <h2>Discover Communities</h2>
+      <div class="search-row">
+        <input id="communitySearch" placeholder="Search community (e.g. tech, music...)" oninput="applyCommunitySearch()" />
+        <select id="community"></select>
+        <button onclick="createPost()">Create Post</button>
+      </div>
+      <div style="margin-top:10px;">
+        <textarea id="content" maxlength="500" rows="4" placeholder="Share anonymously..."></textarea>
+      </div>
+      <p class="notice">Profanity and abusive language filter is enabled for English, Hindi, Bangla, and Odia.</p>
+      <div id="communityNav" style="margin-top:10px;"></div>
+    </section>
 
-    <button onclick="logout()">Logout</button>
-
-    <div id="posts"></div>
-</div>
-
+    <section class="card section">
+      <h2>Trending Right Now</h2>
+      <div id="posts"></div>
+    </section>
+  </div>
 </div>
 
 <script>
-
-// ✅ ONLY ONE SUPABASE INSTANCE
-const supabaseClient = window.supabase.createClient(
-    "https://sveexlibgersvtsyggmj.supabase.co",
-    "sb_publishable_J-EXRUHIOncT4Q15Ha5ohQ_JPvOMDBR"
+const supabase = window.supabase.createClient(
+  "https://sveexlibgersvtsyggmj.supabase.co",
+  "sb_publishable_J-EXRUHIOncT4Q15Ha5ohQ_JPvOMDBR"
 );
 
-// SIGNUP
-async function signUp() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+const COMMUNITIES = [
+  "k/general", "k/chess", "k/tech", "k/sports", "k/music", "k/study",
+  "k/startups", "k/memes", "k/placements", "k/coding"
+];
 
-    if (!email.endsWith("@kiit.ac.in")) {
-        alert("Only KIIT emails allowed");
-        return;
-    }
+const FALLBACK_PROFANITY_WORDS = [
+  // English
+  "fuck", "fucker", "shit", "bitch", "bastard", "asshole", "motherfucker",
+  // Hindi transliteration + script
+  "madarchod", "bhenchod", "behenchod", "chutiya", "gaand", "gandu", "harami", "रंडी", "हरामी",
+  // Bangla transliteration + script
+  "magi", "choda", "chod", "bal", "হারামি", "মাগি",
+  // Odia transliteration + script
+  "chhinal", "randi", "gandu", "harami", "ହରାମି", "ରାଣ୍ଡି"
+];
 
-    const { error } = await supabaseClient.auth.signUp({ email, password });
+let currentCommunity = "all";
+let allPosts = [];
+let userId = localStorage.getItem("anon_id");
+let anonymousName = localStorage.getItem("anon_name");
+let moderatorMode = false;
+let profanityWords = [...FALLBACK_PROFANITY_WORDS];
+const voteSummaryByPost = {};
+const userVoteByPost = {};
+const hiddenPosts = new Set();
+const hiddenReplies = new Set();
 
-    if (error) alert(error.message);
-    else alert("Check your email to confirm");
+if (!userId) {
+  userId = "anon_" + Math.random().toString(36).slice(2, 11);
+  localStorage.setItem("anon_id", userId);
 }
 
-// LOGIN
-async function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-    if (error) alert(error.message);
-    else showApp();
+function boot() {
+  if (anonymousName) {
+    showApp();
+    init();
+  } else {
+    document.getElementById("loginGate").classList.remove("hidden");
+  }
 }
 
-// LOGOUT
-async function logout() {
-    await supabaseClient.auth.signOut();
-    document.getElementById("app").style.display = "none";
-    document.getElementById("auth").style.display = "block";
+function loginAnon() {
+  const aliasInput = document.getElementById("anonAlias");
+  const value = aliasInput.value.trim();
+  anonymousName = value || ("Anon-" + Math.random().toString(36).slice(2, 6));
+  localStorage.setItem("anon_name", anonymousName);
+  showApp();
+  init();
 }
 
-// SHOW APP
 function showApp() {
-    document.getElementById("auth").style.display = "none";
-    document.getElementById("app").style.display = "block";
-    loadPosts();
+  document.getElementById("loginGate").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("activeUserPill").textContent = "Signed in as: " + anonymousName;
+  setModeratorUI();
 }
 
-// CHECK SESSION
-async function checkUser() {
-    const { data } = await supabaseClient.auth.getUser();
-    if (data.user) showApp();
+function setModeratorUI() {
+  const modPill = document.getElementById("modPill");
+  modPill.textContent = moderatorMode ? "Moderator mode" : "Member mode";
+  modPill.style.background = moderatorMode ? "rgba(239,83,80,0.14)" : "rgba(67,160,71,0.12)";
 }
 
-// CREATE POST
+async function toggleModerator() {
+  await refreshModeratorStatus(true);
+  setModeratorUI();
+  renderPosts();
+}
+
+async function init() {
+  buildCommunityOptions(COMMUNITIES);
+  renderCommunityNav(COMMUNITIES);
+  await loadServerProfanityWords();
+  await refreshModeratorStatus(false);
+  await loadPosts();
+}
+
+function buildCommunityOptions(communities) {
+  const select = document.getElementById("community");
+  select.innerHTML = `<option value="">Select community</option>` + communities.map((c) => `<option value="${c}">${c}</option>`).join("");
+}
+
+function renderCommunityNav(communities) {
+  const nav = document.getElementById("communityNav");
+  nav.innerHTML = `<button class="${currentCommunity === "all" ? "active" : ""}" onclick="filterCommunity('all')">All</button>` +
+    communities.map((c) => `<button class="${currentCommunity === c ? "active" : ""}" onclick="filterCommunity('${c}')">${c}</button>`).join("");
+}
+
+function applyCommunitySearch() {
+  const q = document.getElementById("communitySearch").value.trim().toLowerCase();
+  const filtered = !q ? COMMUNITIES : COMMUNITIES.filter((c) => c.toLowerCase().includes(q));
+  buildCommunityOptions(filtered);
+  renderCommunityNav(filtered);
+}
+
+function filterCommunity(community) {
+  currentCommunity = community;
+  applyCommunitySearch();
+  renderPosts();
+}
+
+function hasProfanity(text) {
+  const lower = text.toLowerCase();
+  return profanityWords.some((word) => lower.includes(word.toLowerCase()));
+}
+
+function scorePost(post) {
+  const vote = voteSummaryByPost[post.id] || { up: 0, down: 0 };
+  const created = new Date(post.created_at).getTime();
+  const ageHours = Math.max(1, (Date.now() - created) / (1000 * 60 * 60));
+  return ((vote.up - vote.down) * 3) + (12 / ageHours);
+}
+
+async function loadServerProfanityWords() {
+  const { data, error } = await supabase
+    .from("profanity_terms")
+    .select("term")
+    .eq("is_active", true);
+
+  if (!error && data && data.length) {
+    profanityWords = data.map((item) => String(item.term || "").trim()).filter(Boolean);
+  } else {
+    profanityWords = [...FALLBACK_PROFANITY_WORDS];
+  }
+}
+
+async function refreshModeratorStatus(showMessage) {
+  const { data, error } = await supabase
+    .from("moderators")
+    .select("anonymous_id")
+    .eq("anonymous_id", userId)
+    .maybeSingle();
+
+  moderatorMode = !error && !!data;
+  if (showMessage && !moderatorMode) {
+    alert("No moderator access found for this anonymous account.");
+  }
+}
+
 async function createPost() {
-    const { data } = await supabaseClient.auth.getUser();
+  const content = document.getElementById("content").value.trim();
+  const community = document.getElementById("community").value;
+  if (!content || !community) {
+    alert("Please select community and write your post.");
+    return;
+  }
+  if (hasProfanity(content)) {
+    alert("Post blocked: profanity/abusive language detected.");
+    return;
+  }
 
-    if (!data.user) {
-        alert("Login required");
-        return;
-    }
+  const { error } = await supabase.from("posts").insert([{
+    content,
+    community,
+    anonymous_id: userId,
+    anonymous_name: anonymousName,
+    created_at: new Date().toISOString()
+  }]);
 
-    const content = document.getElementById("content").value;
-    const community = document.getElementById("community").value;
+  if (error) {
+    alert(error.message);
+    return;
+  }
 
-    if (!content || !community) {
-        alert("Fill all fields");
-        return;
-    }
-
-    const { error } = await supabaseClient.from("posts").insert([{
-        content,
-        community,
-        user_id: data.user.id,
-        created_at: new Date().toISOString()
-    }]);
-
-    if (error) {
-        alert(error.message);
-        return;
-    }
-
-    document.getElementById("content").value = "";
-    loadPosts();
+  document.getElementById("content").value = "";
+  loadPosts();
 }
 
-// LOAD POSTS
 async function loadPosts() {
-    const { data } = await supabaseClient
-        .from("posts")
-        .select("*")
-        .order("created_at", { ascending:false });
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(80);
 
-    const div = document.getElementById("posts");
+  if (error) {
+    console.error(error);
+    return;
+  }
 
-    if (!data || data.length === 0) {
-        div.innerHTML = "No posts";
-        return;
-    }
-
-    div.innerHTML = data.map(p => `
-        <div class="post">
-            <small>${p.community}</small>
-            <p>${p.content}</p>
-        </div>
-    `).join("");
+  allPosts = data || [];
+  await hydrateServerState();
+  renderPosts();
 }
 
-// INIT
-checkUser();
+async function hydrateServerState() {
+  Object.keys(voteSummaryByPost).forEach((k) => delete voteSummaryByPost[k]);
+  Object.keys(userVoteByPost).forEach((k) => delete userVoteByPost[k]);
+  hiddenPosts.clear();
+  hiddenReplies.clear();
 
+  const postIds = allPosts.map((p) => p.id);
+  if (!postIds.length) return;
+
+  const [{ data: voteRows }, { data: userRows }, { data: modRows }] = await Promise.all([
+    supabase.from("post_votes").select("post_id,vote_value").in("post_id", postIds),
+    supabase.from("post_votes").select("post_id,vote_value").eq("anonymous_id", userId).in("post_id", postIds),
+    supabase.from("moderation_actions").select("target_type,target_id").eq("action", "hide")
+  ]);
+
+  (voteRows || []).forEach((row) => {
+    if (!voteSummaryByPost[row.post_id]) voteSummaryByPost[row.post_id] = { up: 0, down: 0 };
+    if (row.vote_value === 1) voteSummaryByPost[row.post_id].up += 1;
+    if (row.vote_value === -1) voteSummaryByPost[row.post_id].down += 1;
+  });
+
+  (userRows || []).forEach((row) => {
+    userVoteByPost[row.post_id] = row.vote_value;
+  });
+
+  (modRows || []).forEach((row) => {
+    if (row.target_type === "post") hiddenPosts.add(Number(row.target_id));
+    if (row.target_type === "reply") hiddenReplies.add(Number(row.target_id));
+  });
+}
+
+function renderPosts() {
+  const postsContainer = document.getElementById("posts");
+  const visible = allPosts
+    .filter((p) => !hiddenPosts.has(p.id))
+    .filter((p) => currentCommunity === "all" || p.community === currentCommunity)
+    .sort((a, b) => scorePost(b) - scorePost(a));
+
+  if (!visible.length) {
+    postsContainer.innerHTML = "<p class='notice'>No posts available for this filter.</p>";
+    return;
+  }
+
+  postsContainer.innerHTML = visible.map((p) => {
+    const vote = voteSummaryByPost[p.id] || { up: 0, down: 0 };
+    const score = vote.up - vote.down;
+    const userVote = userVoteByPost[p.id] || 0;
+    return `
+      <article class="post">
+        <div class="post-head">
+          <div>
+            <div class="meta">${escapeHtml(p.community)} • ${timeAgo(p.created_at)}</div>
+            <div class="meta">Posted by ${escapeHtml(p.anonymous_name || "Anon")}</div>
+          </div>
+          <span class="vote-chip">Score: ${score}</span>
+        </div>
+        <p>${escapeHtml(p.content)}</p>
+        <div class="post-actions">
+          <button onclick="votePost(${p.id}, 1)">${userVote === 1 ? "✅ " : ""}⬆ Upvote</button>
+          <button class="secondary" onclick="votePost(${p.id}, -1)">${userVote === -1 ? "✅ " : ""}⬇ Downvote</button>
+          <button class="secondary" onclick="toggleReply(${p.id})">Reply</button>
+          ${moderatorMode ? `<button class="danger" onclick="hidePost(${p.id})">Hide Post</button>` : ""}
+        </div>
+        <div id="reply-${p.id}" class="hidden" style="margin-top:8px;">
+          <textarea id="reply-text-${p.id}" rows="2" placeholder="Reply anonymously..."></textarea>
+          <button onclick="sendReply(${p.id})">Send Reply</button>
+        </div>
+        <div id="replies-${p.id}" style="margin-top:8px;"></div>
+      </article>
+    `;
+  }).join("");
+
+  visible.forEach((p) => loadReplies(p.id));
+}
+
+async function votePost(postId, direction) {
+  const currentVote = userVoteByPost[postId] || 0;
+  if (currentVote === direction) {
+    await supabase.from("post_votes")
+      .delete()
+      .eq("post_id", postId)
+      .eq("anonymous_id", userId);
+  } else {
+    await supabase.from("post_votes").upsert([{
+      post_id: postId,
+      anonymous_id: userId,
+      vote_value: direction,
+      created_at: new Date().toISOString()
+    }], { onConflict: "post_id,anonymous_id" });
+  }
+  await hydrateServerState();
+  renderPosts();
+}
+
+async function hidePost(postId) {
+  if (!moderatorMode) return;
+  await supabase.from("moderation_actions").insert([{
+    target_type: "post",
+    target_id: postId,
+    action: "hide",
+    moderator_id: userId,
+    created_at: new Date().toISOString()
+  }]);
+  await hydrateServerState();
+  renderPosts();
+}
+
+async function sendReply(postId) {
+  const input = document.getElementById(`reply-text-${postId}`);
+  const text = input.value.trim();
+  if (!text) {
+    alert("Reply cannot be empty.");
+    return;
+  }
+  if (hasProfanity(text)) {
+    alert("Reply blocked: profanity/abusive language detected.");
+    return;
+  }
+
+  const { error } = await supabase.from("replies").insert([{
+    post_id: postId,
+    content: text,
+    anonymous_id: userId,
+    anonymous_name: anonymousName,
+    created_at: new Date().toISOString()
+  }]);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  input.value = "";
+  loadReplies(postId);
+}
+
+async function loadReplies(postId) {
+  const { data, error } = await supabase
+    .from("replies")
+    .select("*")
+    .eq("post_id", postId)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  const div = document.getElementById(`replies-${postId}`);
+  const replies = (data || []).filter((r) => !hiddenReplies.has(r.id));
+  if (!replies.length) {
+    div.innerHTML = "";
+    return;
+  }
+
+  div.innerHTML = replies.map((r) => `
+    <div class="reply">
+      <div class="meta">${timeAgo(r.created_at)} • by ${escapeHtml(r.anonymous_name || "Anon")}</div>
+      <p>${escapeHtml(r.content)}</p>
+      ${moderatorMode ? `<button class="danger" onclick="hideReply(${r.id}, ${postId})">Hide Reply</button>` : ""}
+    </div>
+  `).join("");
+}
+
+async function hideReply(replyId, postId) {
+  if (!moderatorMode) return;
+  await supabase.from("moderation_actions").insert([{
+    target_type: "reply",
+    target_id: replyId,
+    action: "hide",
+    moderator_id: userId,
+    created_at: new Date().toISOString()
+  }]);
+  await hydrateServerState();
+  loadReplies(postId);
+}
+
+function toggleReply(id) {
+  const box = document.getElementById(`reply-${id}`);
+  box.classList.toggle("hidden");
+}
+
+function timeAgo(timestamp) {
+  const diffSec = (Date.now() - new Date(timestamp).getTime()) / 1000;
+  if (diffSec < 60) return "just now";
+  if (diffSec < 3600) return Math.floor(diffSec / 60) + "m ago";
+  if (diffSec < 86400) return Math.floor(diffSec / 3600) + "h ago";
+  return Math.floor(diffSec / 86400) + "d ago";
+}
+
+function escapeHtml(text) {
+  const d = document.createElement("div");
+  d.textContent = text || "";
+  return d.innerHTML;
+}
+
+boot();
+setInterval(loadPosts, 30000);
 </script>
-
 </body>
 </html>
