@@ -195,6 +195,7 @@ button.danger { background: linear-gradient(180deg, #e53935, #b71c1c); }
 </div>
 
 <script>
+(() => {
 const supabase = window.supabase.createClient(
   "https://sveexlibgersvtsyggmj.supabase.co",
   "sb_publishable_J-EXRUHIOncT4Q15Ha5ohQ_JPvOMDBR"
@@ -581,8 +582,20 @@ function escapeHtml(text) {
   return d.innerHTML;
 }
 
+window.loginAnon = loginAnon;
+window.toggleModerator = toggleModerator;
+window.applyCommunitySearch = applyCommunitySearch;
+window.filterCommunity = filterCommunity;
+window.createPost = createPost;
+window.votePost = votePost;
+window.toggleReply = toggleReply;
+window.sendReply = sendReply;
+window.hidePost = hidePost;
+window.hideReply = hideReply;
+
 boot();
 setInterval(loadPosts, 30000);
+})();
 </script>
 </body>
 </html>
